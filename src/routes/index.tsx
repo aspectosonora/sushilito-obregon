@@ -10,7 +10,6 @@ import { Gallery } from "@/components/menu/Gallery";
 import { OrderForm } from "@/components/menu/OrderForm";
 import { categories, products, sucursales, type Product } from "@/data/menu";
 import { useStore } from "@/lib/store";
-import { availablePoints, loadOrderHistory } from "@/lib/orders";
 import {
   Clock,
   MapPin,
@@ -19,9 +18,7 @@ import {
   Check,
   ChevronRight,
   ArrowLeft,
-  History,
   LogIn,
-  Star,
 } from "lucide-react";
 import heroBrand from "@/assets/hero-brand.png";
 import logoBlanco from "@/assets/logo-blanco.svg";
@@ -51,7 +48,6 @@ function MenuPage() {
   const { sucursal, setSucursalId } = useStore();
   const [selectedCat, setSelectedCat] = useState<string | null>(null);
   const [modalProduct, setModalProduct] = useState<Product | null>(null);
-  const [accountStats, setAccountStats] = useState({ points: 0, orders: 0 });
 
   const categoryItems = useMemo(
     () => (selectedCat ? products.filter((p) => p.categoryId === selectedCat) : []),
@@ -89,10 +85,6 @@ function MenuPage() {
       if (!exists) setSelectedCat(null);
     }
   }, [selectedCat]);
-
-  useEffect(() => {
-    setAccountStats({ points: Math.max(0, availablePoints()), orders: loadOrderHistory().length });
-  }, []);
 
   const waLink = (s = sucursal) =>
     `https://wa.me/${s.whatsapp}?text=${encodeURIComponent(`Hola Sushilito ${s.name}, quiero hacer un pedido.`)}`;
@@ -172,6 +164,29 @@ function MenuPage() {
         </div>
       </section>
 
+      {/* INICIA SESION */}
+      <section className="mx-auto max-w-3xl px-4 mt-5">
+        <div className="rounded-3xl bg-white border border-black/10 shadow-sm px-4 py-3 sm:px-5 sm:py-4 flex items-center gap-4">
+          <div className="size-12 sm:size-14 rounded-full bg-[var(--brand-black)]/5 grid place-items-center shrink-0">
+            <LogIn className="size-6 text-[var(--brand-red)]" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <div className="font-black uppercase tracking-tight text-[var(--brand-black)] leading-tight">
+              Inicia sesión
+            </div>
+            <div className="text-xs sm:text-sm text-[var(--brand-black)]/70 leading-snug">
+              Acumula puntos y recibe promociones
+            </div>
+          </div>
+          <Link
+            to="/cuenta"
+            className="shrink-0 inline-flex items-center justify-center rounded-full bg-[var(--brand-black)] hover:bg-[var(--brand-red)] text-white text-xs font-black uppercase tracking-wide px-5 py-3 transition"
+          >
+            Entrar
+          </Link>
+        </div>
+      </section>
+
       {/* GALLERY */}
       <Gallery />
 
@@ -233,41 +248,6 @@ function MenuPage() {
 
       {/* DATOS DE ENTREGA + TU PEDIDO */}
       <OrderForm />
-
-      {/* HISTORIAL Y PUNTOS */}
-      <section className="mx-auto max-w-3xl px-4 mt-10">
-        <div className="rounded-2xl bg-[var(--brand-black)] text-white p-5 sm:p-6 relative overflow-hidden">
-          <div className="absolute -right-10 -top-10 size-40 rounded-full bg-[var(--brand-red)]/30 blur-2xl" />
-          <div className="relative flex items-center gap-4 flex-wrap">
-            <div className="size-12 grid place-items-center rounded-2xl bg-[var(--brand-red)] shadow-lg shadow-[var(--brand-red)]/40">
-              <Star className="size-6 fill-white text-white" />
-            </div>
-            <div className="flex-1 min-w-[180px]">
-              <div className="text-[10px] uppercase tracking-[0.2em] text-[var(--brand-gold)] font-bold">
-                Inicia sesión
-              </div>
-              <div className="font-display text-2xl">
-                {accountStats.points} puntos · {accountStats.orders} pedidos
-              </div>
-              <div className="text-xs text-white/70 mt-0.5">
-                Acumula puntos y recibe promociones.
-              </div>
-            </div>
-            <Link
-              to="/cuenta"
-              className="inline-flex items-center gap-1.5 bg-white text-[var(--brand-black)] hover:bg-[var(--brand-red)] hover:text-white text-xs font-bold uppercase tracking-wide px-4 py-2.5 rounded-xl transition"
-            >
-              <LogIn className="size-3.5" /> Entrar
-            </Link>
-            <Link
-              to="/cuenta"
-              className="inline-flex items-center gap-1.5 bg-white/10 text-white hover:bg-white/20 text-xs font-bold uppercase tracking-wide px-4 py-2.5 rounded-xl transition"
-            >
-              <History className="size-3.5" /> Historial
-            </Link>
-          </div>
-        </div>
-      </section>
 
       {/* SUCURSALES + MAPA */}
       <main className="mx-auto max-w-3xl px-4 mt-10 space-y-9">
@@ -434,6 +414,14 @@ function MenuPage() {
               Powered by{" "}
               <span className="text-[var(--brand-red)] font-black tracking-[0.25em]">CLICKSON</span>
             </span>
+          </div>
+          <div className="mt-4 flex justify-center">
+            <Link
+              to="/admin"
+              className="inline-flex items-center justify-center rounded-full border border-white/20 bg-white/5 px-5 py-2 text-[10px] font-black uppercase tracking-wide text-white/60 hover:border-white/40 hover:bg-white/10 hover:text-white transition"
+            >
+              Acceso admin
+            </Link>
           </div>
         </div>
       </footer>
