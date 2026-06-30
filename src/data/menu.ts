@@ -227,6 +227,10 @@ export const sucursales: Sucursal[] = [
     address: "Casa Blanca, Cd. Obregón, Sonora.",
     phone: "644 000 0000", whatsapp: "5216440000000",
     hours: "Lun a Dom · 12:00 PM - 10:00 PM" },
+  { id: "navojoa", name: "Navojoa",
+    address: "Calle Morelos entre García Morales y Toledo, Colonia Reforma, Navojoa, Sonora.",
+    phone: "642 424 1677", whatsapp: "5216424241677",
+    hours: "Lun a Dom · 12:00 PM - 10:00 PM" },
 ];
 
 export const formatMXN = (n: number) =>

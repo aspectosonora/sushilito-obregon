@@ -54,16 +54,19 @@ function CuentaPage() {
             </div>
             <div>
               <div className="text-[10px] uppercase tracking-[0.2em] text-white/50">
-                {profile.phone ? "Cliente" : "Invitado"}
+                {profile.phone ? "Cliente registrado" : "Inicia sesión"}
               </div>
-              <div className="font-bold text-lg">{profile.name || "Guarda tus datos"}</div>
+              <div className="font-bold text-lg">{profile.name || "Acumula puntos y recibe promociones"}</div>
               {profile.phone && <div className="text-xs text-white/60">{profile.phone}</div>}
             </div>
           </div>
           <div className="mt-5 flex gap-2">
-            <button className="flex-1 bg-[var(--brand-red)] hover:bg-white hover:text-[var(--brand-red)] text-white font-bold uppercase tracking-wide text-xs py-3 rounded-xl transition inline-flex items-center justify-center gap-1.5">
+            <button
+              onClick={saveProfile}
+              className="flex-1 bg-[var(--brand-red)] hover:bg-white hover:text-[var(--brand-red)] text-white font-bold uppercase tracking-wide text-xs py-3 rounded-xl transition inline-flex items-center justify-center gap-1.5"
+            >
               <LogIn className="size-4" />
-              Login listo
+              Entrar
             </button>
             <button
               onClick={saveProfile}
@@ -117,6 +120,24 @@ function CuentaPage() {
               onChange={(v) => setProfile({ ...profile, reference: v })}
               className="sm:col-span-2"
             />
+            <label className="sm:col-span-2 flex items-start gap-3 rounded-xl border border-black/10 bg-[var(--brand-bg)] px-3 py-3 text-sm">
+              <input
+                type="checkbox"
+                checked={profile.marketingOptIn}
+                onChange={(event) =>
+                  setProfile({ ...profile, marketingOptIn: event.target.checked })
+                }
+                className="mt-1 accent-[var(--brand-red)]"
+              />
+              <span>
+                <span className="block font-bold text-[var(--brand-black)]">
+                  Quiero recibir promociones
+                </span>
+                <span className="block text-xs text-muted-foreground">
+                  Guardaremos tus datos para puntos, historial y promos de Sushilito.
+                </span>
+              </span>
+            </label>
           </div>
         </section>
 

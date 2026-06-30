@@ -20,6 +20,7 @@ import {
   ChevronRight,
   ArrowLeft,
   History,
+  LogIn,
   Star,
 } from "lucide-react";
 import heroBrand from "@/assets/hero-brand.png";
@@ -243,20 +244,26 @@ function MenuPage() {
             </div>
             <div className="flex-1 min-w-[180px]">
               <div className="text-[10px] uppercase tracking-[0.2em] text-[var(--brand-gold)] font-bold">
-                Mi cuenta
+                Inicia sesión
               </div>
               <div className="font-display text-2xl">
                 {accountStats.points} puntos · {accountStats.orders} pedidos
               </div>
               <div className="text-xs text-white/70 mt-0.5">
-                Acumula puntos en cada pedido para canjear rollos gratis.
+                Acumula puntos y recibe promociones.
               </div>
             </div>
             <Link
               to="/cuenta"
               className="inline-flex items-center gap-1.5 bg-white text-[var(--brand-black)] hover:bg-[var(--brand-red)] hover:text-white text-xs font-bold uppercase tracking-wide px-4 py-2.5 rounded-xl transition"
             >
-              <History className="size-3.5" /> Ver historial
+              <LogIn className="size-3.5" /> Entrar
+            </Link>
+            <Link
+              to="/cuenta"
+              className="inline-flex items-center gap-1.5 bg-white/10 text-white hover:bg-white/20 text-xs font-bold uppercase tracking-wide px-4 py-2.5 rounded-xl transition"
+            >
+              <History className="size-3.5" /> Historial
             </Link>
           </div>
         </div>

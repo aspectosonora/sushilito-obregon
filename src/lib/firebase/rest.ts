@@ -27,6 +27,30 @@ export type AdminCategory = Category & {
   order?: number;
 };
 
+export type AdminCustomerRecord = {
+  id: string;
+  nombre?: string;
+  telefono?: string;
+  direccion?: string;
+  colonia?: string;
+  referencia?: string;
+  formaEntrega?: string;
+  ultimaSucursal?: string;
+  ultimoPedidoId?: string;
+  suscritoPromociones?: boolean;
+  actualizadoEn?: string;
+};
+
+export type AdminPointsRecord = {
+  id: string;
+  clienteId?: string;
+  pedidoId?: string;
+  puntos?: number;
+  tipo?: string;
+  creadoEn?: string;
+  expiresAtMillis?: number;
+};
+
 const projectId = import.meta.env.VITE_FIREBASE_PROJECT_ID as string | undefined;
 const apiKey = import.meta.env.VITE_FIREBASE_API_KEY as string | undefined;
 
@@ -146,6 +170,7 @@ export async function syncOrderToFirebase(order: SavedOrder): Promise<FirebaseSy
         colonia: order.customer.colony,
         referencia: order.customer.reference,
         formaEntrega: order.customer.deliveryMode,
+        suscritoPromociones: Boolean(order.customer.marketingOptIn),
         ultimaSucursal: order.sucursal.id,
         ultimoPedidoId: order.id,
         actualizadoEn: now,
@@ -210,6 +235,22 @@ export async function loadOrdersFromFirebase(): Promise<SavedOrder[]> {
     .map(({ data }) => data as unknown as SavedOrder)
     .filter((order) => Boolean(order.id && order.createdAt))
     .sort((a, b) => String(b.createdAt).localeCompare(String(a.createdAt)));
+}
+
+export async function loadCustomersFromFirebase(): Promise<AdminCustomerRecord[]> {
+  if (!projectId) return [];
+  const docs = await getCollection("clientes");
+  return docs
+    .map(({ id, data }) => ({ id, ...(data as Partial<AdminCustomerRecord>) }))
+    .sort((a, b) => String(b.actualizadoEn ?? "").localeCompare(String(a.actualizadoEn ?? "")));
+}
+
+export async function loadPointsFromFirebase(): Promise<AdminPointsRecord[]> {
+  if (!projectId) return [];
+  const docs = await getCollection("puntos_movimientos");
+  return docs
+    .map(({ id, data }) => ({ id, ...(data as Partial<AdminPointsRecord>) }))
+    .sort((a, b) => String(b.creadoEn ?? "").localeCompare(String(a.creadoEn ?? "")));
 }
 
 export async function updateOrderStatus(orderId: string, status: OrderStatus) {

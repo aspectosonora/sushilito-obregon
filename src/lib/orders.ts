@@ -16,6 +16,7 @@ export type CustomerProfile = {
   paymentMethod: PaymentMethod;
   cashAmount: string;
   notes: string;
+  marketingOptIn: boolean;
 };
 
 export type SavedOrder = {
@@ -59,6 +60,7 @@ export const EMPTY_CUSTOMER: CustomerProfile = {
   paymentMethod: "efectivo",
   cashAmount: "",
   notes: "",
+  marketingOptIn: false,
 };
 
 const LS_CUSTOMER = "sushilito.customer";
