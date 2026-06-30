@@ -1,0 +1,44 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /comandas/{id} {
+      allow read: if true;
+      allow create, update: if true;
+      allow delete: if false;
+    }
+
+    match /clientes/{id} {
+      allow read, create, update: if true;
+      allow delete: if false;
+    }
+
+    match /pedidos/{id} {
+      allow read, create, update: if true;
+      allow delete: if false;
+    }
+
+    match /puntos_movimientos/{id} {
+      allow read, create, update: if true;
+      allow delete: if false;
+    }
+
+    match /productos/{id} {
+      allow read: if true;
+      allow create, update: if true;
+      allow delete: if false;
+    }
+
+    match /categorias/{id} {
+      allow read: if true;
+      allow create, update: if true;
+      allow delete: if false;
+    }
+
+    match /configuracion/{id} {
+      allow read: if true;
+      allow create, update: if true;
+      allow delete: if false;
+    }
+  }
+}

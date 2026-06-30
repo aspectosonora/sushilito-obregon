@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Comanda Sushilito</title>
+    <style>
+      :root {
+        --fs: 12px;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: #f3f3f3;
+        color: #000;
+        font-family: Arial, sans-serif;
+      }
+      .toolbar {
+        position: sticky;
+        top: 0;
+        z-index: 2;
+        display: flex;
+        gap: 8px;
+        padding: 10px;
+        background: #111;
+        color: #fff;
+      }
+      .toolbar button {
+        border: 0;
+        border-radius: 6px;
+        padding: 8px 10px;
+        font-weight: 800;
+        background: #fff;
+        color: #111;
+      }
+      .ticket {
+        width: 58mm;
+        min-height: 100vh;
+        margin: 12px auto;
+        padding: 8px;
+        background: #fff;
+        font-size: var(--fs);
+        line-height: 1.25;
+      }
+      h1,
+      h2,
+      p {
+        margin: 0;
+      }
+      h1 {
+        text-align: center;
+        font-size: 1.45em;
+      }
+      h2 {
+        text-align: center;
+        font-size: 1em;
+        margin-top: 2px;
+      }
+      .center {
+        text-align: center;
+      }
+      .muted {
+        color: #333;
+      }
+      .sep {
+        border-top: 1px dashed #000;
+        margin: 8px 0;
+      }
+      .row {
+        display: flex;
+        justify-content: space-between;
+        gap: 8px;
+      }
+      .item {
+        margin-bottom: 6px;
+      }
+      .small {
+        font-size: 0.9em;
+      }
+      .total {
+        font-size: 1.25em;
+        font-weight: 900;
+      }
+      .status {
+        padding: 10px;
+        text-align: center;
+        font-weight: 800;
+      }
+      @page {
+        size: 58mm auto;
+        margin: 0;
+      }
+      @media print {
+        body {
+          background: #fff;
+        }
+        .toolbar {
+          display: none;
+        }
+        .ticket {
+          margin: 0;
+          width: 58mm;
+          min-height: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="toolbar">
+      <button type="button" id="smaller">A-</button>
+      <button type="button" id="bigger">A+</button>
+      <button type="button" onclick="window.print()">Imprimir</button>
+    </div>
+    <main id="ticket" class="ticket">
+      <p class="status">Cargando comanda...</p>
+    </main>
+    <script>
+      const params = new URLSearchParams(location.search);
+      const orderId = params.get("id") || "";
+      const projectId = params.get("projectId") || "";
+      const apiKey = params.get("apiKey") || "";
+      const root = document.getElementById("ticket");
+      const money = new Intl.NumberFormat("es-MX", {
+        style: "currency",
+        currency: "MXN",
+        maximumFractionDigits: 0,
+      });
+
+      let size = 12;
+      document.getElementById("smaller").addEventListener("click", () => {
+        size = Math.max(9, size - 1);
+        document.documentElement.style.setProperty("--fs", size + "px");
+      });
+      document.getElementById("bigger").addEventListener("click", () => {
+        size = Math.min(18, size + 1);
+        document.documentElement.style.setProperty("--fs", size + "px");
+      });
+
+      function fromFirestoreValue(value) {
+        if (!value) return null;
+        if ("nullValue" in value) return null;
+        if ("booleanValue" in value) return value.booleanValue;
+        if ("integerValue" in value) return Number(value.integerValue);
+        if ("doubleValue" in value) return value.doubleValue;
+        if ("timestampValue" in value) return value.timestampValue;
+        if ("stringValue" in value) return value.stringValue;
+        if ("arrayValue" in value) return (value.arrayValue.values || []).map(fromFirestoreValue);
+        if ("mapValue" in value) return fromFirestoreFields(value.mapValue.fields || {});
+        return null;
+      }
+      function fromFirestoreFields(fields) {
+        return Object.fromEntries(
+          Object.entries(fields || {}).map(([key, value]) => [key, fromFirestoreValue(value)]),
+        );
+      }
+      async function loadFirestore() {
+        if (!projectId || !orderId) return null;
+        const key = apiKey ? "?key=" + encodeURIComponent(apiKey) : "";
+        const url = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/comandas/${encodeURIComponent(orderId)}${key}`;
+        const res = await fetch(url);
+        if (!res.ok) return null;
+        const json = await res.json();
+        return fromFirestoreFields(json.fields || {});
+      }
+      function loadLocal() {
+        try {
+          const orders = JSON.parse(localStorage.getItem("sushilito.order_history") || "[]");
+          const order = orders.find((item) => item.id === orderId);
+          if (!order) return null;
+          return {
+            folio: order.folio,
+            sucursal: order.sucursal,
+            cliente: order.customer,
+            productos: order.items,
+            subtotal: order.subtotal,
+            total: order.total,
+            estado: order.status,
+            creadoEn: order.createdAt,
+            expiresAt: order.expiresAt,
+            expiresAtMillis: order.expiresAtMillis,
+          };
+        } catch (error) {
+          console.warn("No se pudo leer comanda local", error);
+          return null;
+        }
+      }
+      function lineTotal(item) {
+        return Number(item.unitPrice || 0) * Number(item.qty || 0);
+      }
+      function render(order) {
+        if (!order) {
+          root.innerHTML = '<p class="status">Comanda no encontrada.</p>';
+          return;
+        }
+        if (Number(order.expiresAtMillis || 0) <= Date.now()) {
+          root.innerHTML =
+            '<p class="status">Comanda expirada.</p><p class="center small">La vigencia se valida aqui, no desde reglas.</p>';
+          return;
+        }
+        const items = order.productos || order.items || [];
+        const cliente = order.cliente || order.customer || {};
+        const sucursal = order.sucursal || {};
+        root.innerHTML = `
+        <h1>SUSHILITO</h1>
+        <h2>COMANDA 58MM</h2>
+        <p class="center small">${sucursal.name || sucursal.nombre || ""}</p>
+        <div class="sep"></div>
+        <p><strong>Folio:</strong> ${order.folio || order.pedidoId || orderId}</p>
+        <p><strong>Fecha:</strong> ${new Date(order.creadoEn || order.createdAt || Date.now()).toLocaleString("es-MX")}</p>
+        <p><strong>Estado:</strong> ${order.estado || order.status || "recibido"}</p>
+        <div class="sep"></div>
+        <p><strong>Cliente:</strong> ${cliente.name || cliente.nombre || ""}</p>
+        <p><strong>Tel:</strong> ${cliente.phone || cliente.telefono || ""}</p>
+        <p><strong>Entrega:</strong> ${(cliente.deliveryMode || cliente.formaEntrega || "").toString()}</p>
+        ${
+          (cliente.deliveryMode || cliente.formaEntrega) === "domicilio"
+            ? `
+          <p><strong>Dir:</strong> ${cliente.address || cliente.direccion || ""}</p>
+          <p><strong>Col:</strong> ${cliente.colony || cliente.colonia || ""}</p>
+          <p><strong>Ref:</strong> ${cliente.reference || cliente.referencia || ""}</p>
+        `
+            : ""
+        }
+        <div class="sep"></div>
+        ${items
+          .map(
+            (item) => `
+          <div class="item">
+            <div class="row"><strong>${item.qty || 1}x ${item.name || item.nombre}</strong><strong>${money.format(lineTotal(item))}</strong></div>
+            ${item.extras && item.extras.length ? `<p class="small">Extras: ${item.extras.map((e) => e.label || e.nombre).join(", ")}</p>` : ""}
+            ${item.notes ? `<p class="small">Nota: ${item.notes}</p>` : ""}
+          </div>
+        `,
+          )
+          .join("")}
+        <div class="sep"></div>
+        <div class="row"><span>Subtotal</span><strong>${money.format(Number(order.subtotal || 0))}</strong></div>
+        <div class="row total"><span>Total</span><span>${money.format(Number(order.total || 0))}</span></div>
+        <div class="sep"></div>
+        <p><strong>Pago:</strong> ${cliente.paymentMethod || cliente.metodoPago || ""}</p>
+        ${cliente.cashAmount ? `<p><strong>Paga con:</strong> ${cliente.cashAmount}</p>` : ""}
+        ${cliente.notes ? `<p><strong>Notas:</strong> ${cliente.notes}</p>` : ""}
+        <div class="sep"></div>
+        <p class="center small">Gracias por tu pedido</p>
+      `;
+      }
+      (async function init() {
+        try {
+          render((await loadFirestore()) || loadLocal());
+        } catch (error) {
+          console.warn("Comanda no bloqueo el pedido", error);
+          render(loadLocal());
+        }
+      })();
+    </script>
+  </body>
+</html>
