@@ -6,6 +6,34 @@ import g4 from "@/assets/gallery-4.png"; // boneless
 import food2 from "@/assets/food-2.png";
 import food3 from "@/assets/food-3.png";
 import food5 from "@/assets/food-5.png";
+import rollArrachera from "@/assets/rollos/arrachera-roll.png";
+import rollC4 from "@/assets/rollos/c4-roll.png";
+import rollCalifornia from "@/assets/rollos/california.png";
+import rollCaliforniaEspecial from "@/assets/rollos/california-especial.png";
+import rollChalino from "@/assets/rollos/chalino-roll.png";
+import rollChicken from "@/assets/rollos/chicken-roll.png";
+import rollChipotle from "@/assets/rollos/chipotle-roll.png";
+import rollCieloMarTierra from "@/assets/rollos/cielo-mar-tierra.png";
+import rollCordonBlue from "@/assets/rollos/cordon-blue.png";
+import rollCosmo from "@/assets/rollos/cosmo-roll.png";
+import rollCulichi from "@/assets/rollos/culichi-roll.png";
+import rollDinamita from "@/assets/rollos/dinamita-roll.png";
+import rollGreengo from "@/assets/rollos/greengo-roll.png";
+import rollGuerrero from "@/assets/rollos/guerrero-roll.png";
+import rollLuzFuego from "@/assets/rollos/luz-y-fuego.png";
+import rollManchego from "@/assets/rollos/manchego-roll.png";
+import rollMango from "@/assets/rollos/mango-roll.png";
+import rollMorelos from "@/assets/rollos/morelos-roll.png";
+import rollNevado from "@/assets/rollos/nevado-roll.png";
+import rollSalvaje from "@/assets/rollos/salvaje-roll.png";
+import rollSonora from "@/assets/rollos/sonora-roll.png";
+import rollSubarashi from "@/assets/rollos/subarashi-roll.png";
+import rollSushilito from "@/assets/rollos/sushilito-roll.png";
+import rollSushiyto from "@/assets/rollos/sushiyto-roll.png";
+import rollTeriyaki from "@/assets/rollos/teriyaki-roll.png";
+import rollTocino from "@/assets/rollos/tocino-especial.png";
+import rollToro from "@/assets/rollos/toro-roll.png";
+import rollVegetariano from "@/assets/rollos/vegetariano-roll.png";
 
 export type ProductTag = "horneado" | "picante" | "favorito" | "promo" | "nuevo";
 
@@ -81,7 +109,7 @@ export const products: Product[] = [
     description: "Zanahorias, cebolla, calabaza, brócoli y chile morrón. 400gr de verdura." },
 
   // ===== ROLLOS =====
-  { id: "rol-arrachera", categoryId: "rollos", name: "Arrachera Roll (10 pz)", price: 190, image: IMG_ROLL,
+  { id: "rol-arrachera", categoryId: "rollos", name: "Arrachera Roll (10 pz)", price: 190, image: rollArrachera,
     description: "Pepino, aguacate, queso manchego, chile verde, carne de res y por fuera queso phila con tocino." },
   { id: "rol-bomba-camaron", categoryId: "rollos", name: "Bomba Camarón 400gr", price: 190, image: IMG_ROLL2,
     description: "Pepino, aguacate, queso phila, camarón." },
@@ -93,58 +121,62 @@ export const products: Product[] = [
     description: "Pepino, aguacate, queso phila y zanahoria." },
   { id: "rol-bombazo", categoryId: "rollos", name: "Bombazo Sushi 400gr", price: 210, image: IMG_ROLL, tags: ["picante"],
     description: "Pepino, aguacate, queso phila, camarón, surimi, marlin, tocino, chile y aderezo dinamita." },
-  { id: "rol-c4", categoryId: "rollos", name: "C-4 Roll (10 pz)", price: 190, image: IMG_ROLL, tags: ["picante"],
+  { id: "rol-c4", categoryId: "rollos", name: "C-4 Roll (10 pz)", price: 190, image: rollC4, tags: ["picante"],
     description: "Pepino, aguacate, queso phila, chile serrano, camarón empanizado y tampico." },
-  { id: "rol-cali-especial", categoryId: "rollos", name: "California Especial (10 pz)", price: 175, image: IMG_ROLL2,
+  { id: "rol-cali-especial", categoryId: "rollos", name: "California Especial (10 pz)", price: 175, image: rollCaliforniaEspecial,
     description: "Pepino, aguacate, queso phila y ingrediente a elegir: salmón, atún, ostión y/o pulpo." },
-  { id: "rol-cali-trad", categoryId: "rollos", name: "California Tradicional (10 pz)", price: 155, image: IMG_ROLL2, tags: ["favorito"],
+  { id: "rol-cali-trad", categoryId: "rollos", name: "California Tradicional (10 pz)", price: 155, image: rollCalifornia, tags: ["favorito"],
     description: "Pepino, aguacate, phila y un ingrediente: res, marlin, tocino, pollo, plátano, chile toreado, camarón, surimi o tampico." },
-  { id: "rol-cali-veg", categoryId: "rollos", name: "California Vegetariano (10 pz)", price: 120, image: IMG_ROLL2,
+  { id: "rol-cali-veg", categoryId: "rollos", name: "California Vegetariano (10 pz)", price: 120, image: rollVegetariano,
     description: "Pepino, aguacate, queso phila y zanahoria." },
-  { id: "rol-chalino", categoryId: "rollos", name: "Chalino Roll (10 pz)", price: 190, image: IMG_ROLL, tags: ["picante"],
+  { id: "rol-chalino", categoryId: "rollos", name: "Chalino Roll (10 pz)", price: 190, image: rollChalino, tags: ["picante"],
     description: "Pepino, aguacate, queso phila, surimi y camarón, gratinado con queso manchego y aderezo dinamita." },
-  { id: "rol-chicken", categoryId: "rollos", name: "Chicken Roll (10 pz)", price: 190, image: IMG_ROLL,
+  { id: "rol-chicken", categoryId: "rollos", name: "Chicken Roll (10 pz)", price: 190, image: rollChicken,
     description: "Pepino, aguacate, queso manchego, tampico, camarón empanizado y pollo." },
-  { id: "rol-chipotle", categoryId: "rollos", name: "Chipotle Roll (10 pz)", price: 190, image: IMG_ROLL, tags: ["picante"],
+  { id: "rol-chipotle", categoryId: "rollos", name: "Chipotle Roll (10 pz)", price: 190, image: rollChipotle, tags: ["picante"],
     description: "Pepino, aguacate, queso phila, camarón y tocino, bañado con crema de chipotle." },
-  { id: "rol-cmt", categoryId: "rollos", name: "Cielo, Mar y Tierra Roll (10 pz)", price: 190, image: IMG_ROLL,
+  { id: "rol-cmt", categoryId: "rollos", name: "Cielo, Mar y Tierra Roll (10 pz)", price: 190, image: rollCieloMarTierra,
     description: "Pepino, aguacate, queso phila, camarón, pollo y res." },
-  { id: "rol-cordon", categoryId: "rollos", name: "Cordon Blue (10 pz)", price: 190, image: IMG_ROLL,
+  { id: "rol-cordon", categoryId: "rollos", name: "Cordon Blue (10 pz)", price: 190, image: rollCordonBlue,
     description: "Pepino, aguacate, queso phila, pollo, gratinado con queso manchego y tocino." },
-  { id: "rol-cosmo", categoryId: "rollos", name: "Cosmo Roll (10 pz)", price: 190, image: IMG_ROLL,
+  { id: "rol-cosmo", categoryId: "rollos", name: "Cosmo Roll (10 pz)", price: 190, image: rollCosmo,
     description: "Pepino, aguacate, queso phila, camarón por dentro y salmón por fuera." },
-  { id: "rol-culichi", categoryId: "rollos", name: "Culichi Roll (10 pz)", price: 190, image: IMG_ROLL, tags: ["picante"],
+  { id: "rol-culichi", categoryId: "rollos", name: "Culichi Roll (10 pz)", price: 190, image: rollCulichi, tags: ["picante"],
     description: "Pepino, aguacate, queso phila, tocino, camarón y rajas de chile caribe toreados." },
-  { id: "rol-dinamita", categoryId: "rollos", name: "Dinamita Roll (10 pz)", price: 190, image: IMG_ROLL, tags: ["picante", "favorito"],
+  { id: "rol-dinamita", categoryId: "rollos", name: "Dinamita Roll (10 pz)", price: 190, image: rollDinamita, tags: ["picante", "favorito"],
     description: "Pepino, aguacate, queso phila, camarón, marlin, chile toreado y queso manchego gratinado con aderezo dinamita." },
-  { id: "rol-greengo", categoryId: "rollos", name: "Greengo Roll (10 pz)", price: 190, image: IMG_ROLL,
+  { id: "rol-greengo", categoryId: "rollos", name: "Greengo Roll (10 pz)", price: 190, image: rollGreengo,
     description: "Vegetales (apio, zanahoria, pepino y aguacate), queso phila, tiritas de pechuga empanizada con aderezo de la casa." },
-  { id: "rol-guerrero", categoryId: "rollos", name: "Guerrero Roll (10 pz)", price: 210, image: IMG_ROLL, tags: ["nuevo"],
+  { id: "rol-guerrero", categoryId: "rollos", name: "Guerrero Roll (10 pz)", price: 210, image: rollGuerrero, tags: ["nuevo"],
     description: "Salmón empanizado, aguacate, pepino y doble phila. Coronado con kanikama, camarón y salsa de la casa." },
-  { id: "rol-luz-fuego", categoryId: "rollos", name: "Luz y Fuego Roll (10 pz)", price: 190, image: IMG_ROLL,
+  { id: "rol-luz-fuego", categoryId: "rollos", name: "Luz y Fuego Roll (10 pz)", price: 190, image: rollLuzFuego,
     description: "Pepino, aguacate, queso phila, marlin, surimi y queso manchego gratinado con tocino." },
-  { id: "rol-manchego", categoryId: "rollos", name: "Manchego Roll (10 pz)", price: 190, image: IMG_ROLL,
+  { id: "rol-manchego", categoryId: "rollos", name: "Manchego Roll (10 pz)", price: 190, image: rollManchego,
     description: "Pepino, aguacate, queso phila, tocino, res y gratinado con queso manchego." },
-  { id: "rol-mango", categoryId: "rollos", name: "Mango Roll (10 pz)", price: 190, image: IMG_ROLL,
+  { id: "rol-mango", categoryId: "rollos", name: "Mango Roll (10 pz)", price: 190, image: rollMango,
     description: "Pepino, aguacate, pollo y tocino, con queso phila y trozos de piña, cubierto de salsa de mango con chile." },
-  { id: "rol-morelos", categoryId: "rollos", name: "Morelos Roll (10 pz)", price: 190, image: IMG_ROLL, tags: ["picante"],
+  { id: "rol-morelos", categoryId: "rollos", name: "Morelos Roll (10 pz)", price: 190, image: rollMorelos, tags: ["picante"],
     description: "Pepino, aguacate, res, pollo, deditos de queso manchego, cubierto de queso phila, chiles caribe y verde con tocino." },
-  { id: "rol-nevado", categoryId: "rollos", name: "Nevado Roll (10 pz)", price: 190, image: IMG_ROLL,
+  { id: "rol-nevado", categoryId: "rollos", name: "Nevado Roll (10 pz)", price: 190, image: rollNevado,
     description: "Pepino, aguacate, queso phila, surimi, camarón y gratinado con queso manchego o cubierto con phila." },
+  { id: "rol-salvaje", categoryId: "rollos", name: "Salvaje Roll (10 pz)", price: 190, image: rollSalvaje, tags: ["nuevo"],
+    description: "" },
   { id: "rol-tampico", categoryId: "rollos", name: "Orden de Tampico", price: 45, image: IMG_ROLL,
     description: "" },
-  { id: "rol-shushiyto", categoryId: "rollos", name: "Shushiyto Roll (10 pz)", price: 190, image: IMG_ROLL,
+  { id: "rol-shushiyto", categoryId: "rollos", name: "Sushiyto Roll (10 pz)", price: 190, image: rollSushiyto,
     description: "Pepino, aguacate, queso phila, cangrejo empanizado coronado con tampico spicy y camarón empanizado." },
-  { id: "rol-sonora", categoryId: "rollos", name: "Sonora Roll (10 pz)", price: 190, image: IMG_ROLL,
+  { id: "rol-sonora", categoryId: "rollos", name: "Sonora Roll (10 pz)", price: 190, image: rollSonora,
     description: "Pepino, aguacate, queso phila, chile verde, pollo, tocino, res, cubierto de aguacate y crema de cilantro." },
-  { id: "rol-subarachi", categoryId: "rollos", name: "Subarachi Roll (10 pz)", price: 190, image: IMG_ROLL,
+  { id: "rol-subarachi", categoryId: "rollos", name: "Subarashi Roll (10 pz)", price: 190, image: rollSubarashi,
     description: "Pepino, aguacate, queso phila, camarón; por fuera queso phila y tampico." },
-  { id: "rol-sushilito", categoryId: "rollos", name: "Sushilito Roll (10 pz)", price: 190, image: IMG_ROLL, tags: ["favorito", "picante"],
+  { id: "rol-sushilito", categoryId: "rollos", name: "Sushilito Roll (10 pz)", price: 190, image: rollSushilito, tags: ["favorito", "picante"],
     description: "Pepino, aguacate, queso phila, tocino, camarón, chiles toreados y salsa picosa por dentro." },
-  { id: "rol-teriyaki", categoryId: "rollos", name: "Teriyaki Roll (10 pz)", price: 180, image: IMG_ROLL,
+  { id: "rol-teriyaki", categoryId: "rollos", name: "Teriyaki Roll (10 pz)", price: 180, image: rollTeriyaki,
     description: "Aguacate, queso phila, pepino, pollo y zanahoria con salsa teriyaki y ajonjolí." },
-  { id: "rol-tocino", categoryId: "rollos", name: "Tocino Especial (10 pz)", price: 190, image: IMG_ROLL,
+  { id: "rol-tocino", categoryId: "rollos", name: "Tocino Especial (10 pz)", price: 190, image: rollTocino,
     description: "Pepino, aguacate, surimi y camarón empanizados, con queso phila y tocino, cubierto con crema de cilantro." },
+  { id: "rol-toro", categoryId: "rollos", name: "Toro Roll (10 pz)", price: 190, image: rollToro, tags: ["nuevo"],
+    description: "" },
 
   // ===== PLATILLOS =====
   { id: "plat-chich-atun", categoryId: "platillos", name: "Chicharrones de Atún", price: 205, image: IMG_PLAT,
