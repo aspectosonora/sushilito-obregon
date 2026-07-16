@@ -9,6 +9,9 @@ export type OrderStatus = "recibido" | "preparando" | "en_camino" | "entregado" 
 export type CustomerProfile = {
   name: string;
   phone: string;
+  email?: string;
+  authUid?: string;
+  provider?: string;
   deliveryMode: DeliveryMode;
   address: string;
   colony: string;
@@ -31,11 +34,15 @@ export type SavedOrder = {
   promoSubtotal: number;
   eligibleSubtotal: number;
   shipping: number;
+  shippingPending?: boolean;
   pointsRedeemed: number;
   pointsEarned: number;
   total: number;
   status: OrderStatus;
+  statusCode?: number;
   ticketUrl: string;
+  transferInstructions?: string;
+  transferImageUrl?: string;
   expiresAt: string;
   expiresAtMillis: number;
 };
@@ -70,6 +77,10 @@ const LS_PENDING = "sushilito.firebase_pending_orders";
 
 const firebaseProjectId = import.meta.env.VITE_FIREBASE_PROJECT_ID as string | undefined;
 const firebaseApiKey = import.meta.env.VITE_FIREBASE_API_KEY as string | undefined;
+const transferBankInfo = import.meta.env.VITE_TRANSFER_BANK_INFO as string | undefined;
+const transferImageUrl = import.meta.env.VITE_TRANSFER_IMAGE_URL as string | undefined;
+const COMANDA_TTL_MS = 30 * 24 * 60 * 60 * 1000;
+const POINTS_TTL_MS = 183 * 24 * 60 * 60 * 1000;
 
 function readJson<T>(key: string, fallback: T): T {
   if (typeof window === "undefined") return fallback;
@@ -100,11 +111,16 @@ export function saveCustomerProfile(customer: CustomerProfile) {
 }
 
 export function loadOrderHistory(): SavedOrder[] {
-  return readJson<SavedOrder[]>(LS_HISTORY, []);
+  return readJson<Partial<SavedOrder>[]>(LS_HISTORY, [])
+    .map(normalizeSavedOrder)
+    .filter(Boolean) as SavedOrder[];
 }
 
 export function saveOrderHistory(orders: SavedOrder[]) {
-  writeJson(LS_HISTORY, orders.slice(0, 30));
+  const unique = orders.filter(
+    (order, index, list) => order.id && list.findIndex((item) => item.id === order.id) === index,
+  );
+  writeJson(LS_HISTORY, unique.slice(0, 30));
 }
 
 export function saveLocalOrder(order: SavedOrder) {
@@ -134,11 +150,24 @@ export function savePointsMovements(movements: PointsMovement[]) {
 }
 
 export function availablePoints(now = Date.now()) {
-  return loadPointsMovements().reduce((sum, movement) => {
+  return pointsBalance(loadPointsMovements(), now);
+}
+
+export function pointsBalance(movements: PointsMovement[], now = Date.now()) {
+  return movements.reduce((sum, movement) => {
     if (movement.points > 0 && movement.expiresAtMillis && movement.expiresAtMillis <= now)
       return sum;
     return sum + movement.points;
   }, 0);
+}
+
+export function transferInfo() {
+  return {
+    instructions:
+      transferBankInfo?.trim() ||
+      "Datos de transferencia por confirmar con la sucursal antes de preparar el pedido.",
+    imageUrl: transferImageUrl?.trim() || "",
+  };
 }
 
 export function savePendingFirebaseOrder(order: SavedOrder) {
@@ -189,13 +218,15 @@ export function createSavedOrder(args: {
 }): SavedOrder {
   const now = new Date();
   const id = createOrderId();
-  const expiresAtMillis = now.getTime() + 48 * 60 * 60 * 1000;
+  const expiresAtMillis = now.getTime() + COMANDA_TTL_MS;
   const promoSubtotal = args.cart
     .filter((item) => item.isPromotion)
     .reduce((sum, item) => sum + item.unitPrice * item.qty, 0);
   const eligibleSubtotal = Math.max(0, args.subtotal - promoSubtotal);
   const pointsRedeemed = Math.max(0, Math.min(args.pointsRedeemed ?? 0, args.subtotal));
   const total = Math.max(0, args.subtotal - pointsRedeemed);
+  const transfer = transferInfo();
+  const shippingPending = args.customer.deliveryMode === "domicilio";
 
   return {
     id,
@@ -209,11 +240,16 @@ export function createSavedOrder(args: {
     promoSubtotal,
     eligibleSubtotal,
     shipping: 0,
+    shippingPending,
     pointsRedeemed,
     pointsEarned: pointsForEligibleSubtotal(eligibleSubtotal),
     total,
     status: "recibido",
+    statusCode: statusCode("recibido"),
     ticketUrl: createComandaUrl(id),
+    transferInstructions:
+      args.customer.paymentMethod === "transferencia" ? transfer.instructions : undefined,
+    transferImageUrl: args.customer.paymentMethod === "transferencia" ? transfer.imageUrl : undefined,
     expiresAt: new Date(expiresAtMillis).toISOString(),
     expiresAtMillis,
   };
@@ -236,7 +272,7 @@ export function completeLocalOrder(order: SavedOrder) {
     const movements = loadPointsMovements();
     const next: PointsMovement[] = [...movements];
     if (order.pointsEarned > 0) {
-      const expiresAtMillis = Date.now() + 183 * 24 * 60 * 60 * 1000;
+      const expiresAtMillis = Date.now() + POINTS_TTL_MS;
       next.unshift({
         id: `${order.id}-earn`,
         orderId: order.id,
@@ -267,19 +303,6 @@ export function buildWhatsAppMessage(order: SavedOrder) {
   lines.push(`*Nuevo pedido Sushilito ${order.sucursal.name}*`);
   lines.push(`*Folio:* ${order.folio}`);
   lines.push("");
-  lines.push("*Productos:*");
-  order.items.forEach((item) => {
-    lines.push(`- ${item.qty}x ${item.name} - ${formatMXN(item.unitPrice * item.qty)}`);
-    if (item.extras.length)
-      lines.push(`   Extras: ${item.extras.map((extra) => extra.label).join(", ")}`);
-    if (item.notes) lines.push(`   Nota: ${item.notes}`);
-  });
-  lines.push("");
-  lines.push(`*Subtotal:* ${formatMXN(order.subtotal)}`);
-  if (order.pointsRedeemed > 0)
-    lines.push(`*Puntos canjeados:* -${formatMXN(order.pointsRedeemed)}`);
-  lines.push(`*Total:* ${formatMXN(order.total)}`);
-  lines.push("");
   lines.push(`*Cliente:* ${order.customer.name}`);
   lines.push(`*Telefono:* ${order.customer.phone}`);
   lines.push(
@@ -290,23 +313,47 @@ export function buildWhatsAppMessage(order: SavedOrder) {
     lines.push(`*Colonia:* ${order.customer.colony}`);
     if (order.customer.reference) lines.push(`*Referencia:* ${order.customer.reference}`);
   }
+  lines.push("");
+  lines.push("*Productos:*");
+  order.items.forEach((item) => {
+    lines.push(`- ${item.qty}x ${item.name} - ${formatMXN(item.unitPrice * item.qty)}`);
+    if (item.extras.length)
+      lines.push(`   Extras: ${item.extras.map((extra) => extra.label).join(", ")}`);
+    if (item.notes) lines.push(`   Nota: ${item.notes}`);
+  });
+  lines.push("");
+  lines.push(`*Subtotal:* ${formatMXN(order.subtotal)}`);
+  if (order.shippingPending) lines.push("*Envio:* Por confirmar");
+  else if (order.shipping > 0) lines.push(`*Envio:* ${formatMXN(order.shipping)}`);
+  if (order.pointsRedeemed > 0)
+    lines.push(`*Puntos canjeados:* -${formatMXN(order.pointsRedeemed)}`);
+  lines.push(`*Total:* ${formatMXN(order.total)}`);
+  lines.push("");
   lines.push(
     `*Pago:* ${order.customer.paymentMethod === "efectivo" ? "Efectivo" : "Transferencia"}`,
   );
   if (order.customer.paymentMethod === "efectivo" && order.customer.cashAmount) {
     lines.push(`*Paga con:* ${order.customer.cashAmount}`);
   }
+  if (order.customer.paymentMethod === "transferencia") {
+    lines.push(`*Datos transferencia:* ${order.transferInstructions || transferInfo().instructions}`);
+    if (order.transferImageUrl) lines.push(`*Imagen transferencia:* ${order.transferImageUrl}`);
+  }
   if (order.customer.notes) lines.push(`*Notas:* ${order.customer.notes}`);
   lines.push("");
-  lines.push(`*Comanda:* ${order.ticketUrl}`);
+  if (order.ticketUrl) lines.push(`*Comanda:* ${order.ticketUrl}`);
   lines.push(`*Puntos generados:* ${order.pointsEarned}`);
   return lines.join("\n");
 }
 
-export function openWhatsAppOrder(order: SavedOrder) {
+export function openWhatsAppOrder(order: SavedOrder, preopenedWindow?: Window | null) {
   const phone = order.sucursal.whatsapp.replace(/\D/g, "");
   const message = buildWhatsAppMessage(order);
   const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+  if (preopenedWindow && !preopenedWindow.closed) {
+    preopenedWindow.location.href = url;
+    return;
+  }
   const opened = window.open(url, "_blank", "noopener,noreferrer");
   if (!opened) window.location.href = url;
 }
@@ -321,4 +368,73 @@ export const ORDER_STATUSES: { value: OrderStatus; label: string }[] = [
 
 export function statusLabel(status: OrderStatus) {
   return ORDER_STATUSES.find((item) => item.value === status)?.label ?? status;
+}
+
+export const ORDER_STATUS_CODES: Record<OrderStatus, number> = {
+  recibido: 0,
+  preparando: 1,
+  en_camino: 2,
+  entregado: 3,
+  cancelado: 4,
+};
+
+const ORDER_STATUS_BY_CODE = Object.fromEntries(
+  Object.entries(ORDER_STATUS_CODES).map(([status, code]) => [code, status]),
+) as Record<number, OrderStatus>;
+
+export function statusCode(status: OrderStatus) {
+  return ORDER_STATUS_CODES[status] ?? 0;
+}
+
+export function normalizeStatus(value: unknown, fallback: OrderStatus = "recibido"): OrderStatus {
+  if (typeof value === "number") return ORDER_STATUS_BY_CODE[value] ?? fallback;
+  if (typeof value === "string") {
+    if (value in ORDER_STATUS_CODES) return value as OrderStatus;
+    const numeric = Number(value);
+    if (Number.isFinite(numeric)) return ORDER_STATUS_BY_CODE[numeric] ?? fallback;
+  }
+  return fallback;
+}
+
+export function normalizeSavedOrder(order: Partial<SavedOrder> | null | undefined): SavedOrder | null {
+  if (!order?.id) return null;
+  const customer = { ...EMPTY_CUSTOMER, ...(order.customer || {}) };
+  const status = normalizeStatus(order.status, normalizeStatus((order as { estado?: unknown }).estado));
+  const createdAt = String(order.createdAt || (order as { creadoEn?: string }).creadoEn || new Date().toISOString());
+  const expiresAtMillis = Number(order.expiresAtMillis || parseExpiryMillis(order.expiresAt) || 0);
+  return {
+    id: order.id,
+    folio: order.folio || order.id,
+    createdAt,
+    updatedAt: order.updatedAt || createdAt,
+    sucursal: order.sucursal as Sucursal,
+    customer,
+    items: Array.isArray(order.items) ? order.items : [],
+    subtotal: Number(order.subtotal || 0),
+    promoSubtotal: Number(order.promoSubtotal || 0),
+    eligibleSubtotal: Number(order.eligibleSubtotal || order.subtotal || 0),
+    shipping: Number(order.shipping || 0),
+    shippingPending: Boolean(order.shippingPending),
+    pointsRedeemed: Number(order.pointsRedeemed || 0),
+    pointsEarned: Number(order.pointsEarned || 0),
+    total: Number(order.total || 0),
+    status,
+    statusCode: statusCode(status),
+    ticketUrl: order.ticketUrl || createComandaUrl(order.id),
+    transferInstructions: order.transferInstructions,
+    transferImageUrl: order.transferImageUrl,
+    expiresAt: order.expiresAt || (expiresAtMillis ? new Date(expiresAtMillis).toISOString() : ""),
+    expiresAtMillis,
+  };
+}
+
+function parseExpiryMillis(value: unknown) {
+  if (!value) return 0;
+  if (typeof value === "string") return Date.parse(value) || 0;
+  if (typeof value === "number") return value;
+  if (typeof value === "object") {
+    const timestamp = value as { seconds?: number; nanoseconds?: number };
+    if (typeof timestamp.seconds === "number") return timestamp.seconds * 1000;
+  }
+  return 0;
 }

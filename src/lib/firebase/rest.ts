@@ -1,6 +1,13 @@
 import type { Category, Product } from "@/data/menu";
-import type { OrderStatus, SavedOrder } from "@/lib/orders";
-import { clearPendingFirebaseOrder, savePendingFirebaseOrder } from "@/lib/orders";
+import type { CustomerProfile, OrderStatus, SavedOrder } from "@/lib/orders";
+import {
+  EMPTY_CUSTOMER,
+  clearPendingFirebaseOrder,
+  normalizeSavedOrder,
+  normalizeStatus,
+  savePendingFirebaseOrder,
+  statusCode,
+} from "@/lib/orders";
 
 type FirestoreValue =
   | { nullValue: null }
@@ -31,13 +38,18 @@ export type AdminCustomerRecord = {
   id: string;
   nombre?: string;
   telefono?: string;
+  email?: string;
+  authUid?: string;
+  proveedorAuth?: string;
   direccion?: string;
   colonia?: string;
   referencia?: string;
   formaEntrega?: string;
+  metodoPago?: string;
   ultimaSucursal?: string;
   ultimoPedidoId?: string;
   suscritoPromociones?: boolean;
+  puntosRespaldo?: number;
   actualizadoEn?: string;
 };
 
@@ -146,9 +158,67 @@ async function getCollection(collection: string) {
   }));
 }
 
+async function getDocument(collection: string, id: string) {
+  const baseUrl = firestoreBaseUrl();
+  if (!baseUrl) return null;
+  const cleanId = encodeURIComponent(id.replace(/\//g, "-"));
+  const res = await fetch(`${baseUrl}/${collection}/${cleanId}${apiKeyQuery()}`);
+  if (!res.ok) throw new Error(`Firestore read ${collection}/${id} failed: ${res.status}`);
+  const json = (await res.json()) as { fields?: Record<string, FirestoreValue> };
+  return fromFirestoreFields(json.fields ?? {});
+}
+
 function customerId(order: SavedOrder) {
+  if (order.customer.authUid) return `auth-${order.customer.authUid}`;
   const phone = order.customer.phone.replace(/\D/g, "");
   return phone ? `tel-${phone}` : `anon-${order.id}`;
+}
+
+function customerIdFromProfile(profile: Partial<CustomerProfile>, authUid?: string) {
+  if (authUid || profile.authUid) return `auth-${authUid || profile.authUid}`;
+  const phone = String(profile.phone || "").replace(/\D/g, "");
+  return phone ? `tel-${phone}` : "";
+}
+
+function customerToFirestore(
+  id: string,
+  profile: CustomerProfile,
+  now: string,
+  extra: Record<string, unknown> = {},
+) {
+  return {
+    id,
+    nombre: profile.name,
+    telefono: profile.phone,
+    email: profile.email || "",
+    authUid: profile.authUid || "",
+    proveedorAuth: profile.provider || "",
+    direccion: profile.address,
+    colonia: profile.colony,
+    referencia: profile.reference,
+    formaEntrega: profile.deliveryMode,
+    metodoPago: profile.paymentMethod,
+    suscritoPromociones: Boolean(profile.marketingOptIn),
+    actualizadoEn: now,
+    ...extra,
+  };
+}
+
+function customerFromRecord(record: Partial<AdminCustomerRecord>): CustomerProfile {
+  return {
+    ...EMPTY_CUSTOMER,
+    name: record.nombre || "",
+    phone: record.telefono || "",
+    email: record.email || "",
+    authUid: record.authUid || "",
+    provider: record.proveedorAuth || "",
+    address: record.direccion || "",
+    colony: record.colonia || "",
+    reference: record.referencia || "",
+    deliveryMode: record.formaEntrega === "domicilio" ? "domicilio" : "recoger",
+    paymentMethod: record.metodoPago === "transferencia" ? "transferencia" : "efectivo",
+    marketingOptIn: Boolean(record.suscritoPromociones),
+  };
 }
 
 export async function syncOrderToFirebase(order: SavedOrder): Promise<FirebaseSyncResult> {
@@ -160,21 +230,27 @@ export async function syncOrderToFirebase(order: SavedOrder): Promise<FirebaseSy
   try {
     const cid = customerId(order);
     const now = new Date().toISOString();
+    const normalizedStatus = normalizeStatus(order.status);
+    const code = statusCode(normalizedStatus);
     const results = await Promise.allSettled([
-      safePatch("pedidos", order.id, { ...order, clienteId: cid, actualizadoEn: now }),
-      safePatch("clientes", cid, {
-        id: cid,
-        nombre: order.customer.name,
-        telefono: order.customer.phone,
-        direccion: order.customer.address,
-        colonia: order.customer.colony,
-        referencia: order.customer.reference,
-        formaEntrega: order.customer.deliveryMode,
-        suscritoPromociones: Boolean(order.customer.marketingOptIn),
-        ultimaSucursal: order.sucursal.id,
-        ultimoPedidoId: order.id,
+      safePatch("pedidos", order.id, {
+        ...order,
+        status: code,
+        statusText: normalizedStatus,
+        estado: normalizedStatus,
+        estadoCodigo: code,
+        clienteId: cid,
         actualizadoEn: now,
       }),
+      safePatch(
+        "clientes",
+        cid,
+        customerToFirestore(cid, order.customer, now, {
+          ultimaSucursal: order.sucursal.id,
+          ultimoPedidoId: order.id,
+          puntosRespaldo: order.pointsEarned - order.pointsRedeemed,
+        }),
+      ),
       safePatch("comandas", order.id, {
         id: order.id,
         pedidoId: order.id,
@@ -183,8 +259,19 @@ export async function syncOrderToFirebase(order: SavedOrder): Promise<FirebaseSy
         cliente: order.customer,
         productos: order.items,
         subtotal: order.subtotal,
+        envio: order.shipping,
+        envioPendiente: Boolean(order.shippingPending),
+        puntosCanjeados: order.pointsRedeemed,
+        puntosGenerados: order.pointsEarned,
         total: order.total,
-        estado: order.status,
+        metodoPago: order.customer.paymentMethod,
+        transferencia: {
+          instrucciones: order.transferInstructions || "",
+          imagenUrl: order.transferImageUrl || "",
+        },
+        estado: normalizedStatus,
+        status: code,
+        statusText: normalizedStatus,
         creadoEn: order.createdAt,
         actualizadoEn: now,
         expiresAt: order.expiresAt,
@@ -232,9 +319,63 @@ export async function loadOrdersFromFirebase(): Promise<SavedOrder[]> {
   if (!projectId) return [];
   const docs = await getCollection("pedidos");
   return docs
-    .map(({ data }) => data as unknown as SavedOrder)
-    .filter((order) => Boolean(order.id && order.createdAt))
+    .map(({ data }) => normalizeSavedOrder(data as Partial<SavedOrder>))
+    .filter((order): order is SavedOrder => Boolean(order))
     .sort((a, b) => String(b.createdAt).localeCompare(String(a.createdAt)));
+}
+
+export async function saveCustomerProfileToFirebase(profile: CustomerProfile) {
+  if (!projectId) return false;
+  const id = customerIdFromProfile(profile);
+  if (!id) return false;
+  return safePatch("clientes", id, customerToFirestore(id, profile, new Date().toISOString()));
+}
+
+export async function loadCustomerProfileFromFirebase(
+  profile: Partial<CustomerProfile>,
+): Promise<CustomerProfile | null> {
+  if (!projectId) return null;
+  const ids = [
+    customerIdFromProfile(profile, profile.authUid),
+    customerIdFromProfile({ phone: profile.phone || "" }),
+  ].filter((id, index, list) => id && list.indexOf(id) === index);
+  for (const id of ids) {
+    try {
+      const data = await getDocument("clientes", id);
+      if (data) return customerFromRecord(data as Partial<AdminCustomerRecord>);
+    } catch (error) {
+      console.warn("Perfil Firebase no disponible", error);
+    }
+  }
+  return null;
+}
+
+export async function loadOrdersForCustomerFromFirebase(
+  profile: Partial<CustomerProfile>,
+): Promise<SavedOrder[]> {
+  const allOrders = await loadOrdersFromFirebase();
+  const profileId = customerIdFromProfile(profile);
+  const phone = String(profile.phone || "").replace(/\D/g, "");
+  const authUid = profile.authUid || "";
+  return allOrders.filter((order) => {
+    const orderPhone = order.customer.phone.replace(/\D/g, "");
+    const orderAuthUid = order.customer.authUid || "";
+    const clienteId = (order as SavedOrder & { clienteId?: string }).clienteId;
+    return (
+      (phone && orderPhone === phone) ||
+      (authUid && orderAuthUid === authUid) ||
+      (profileId && clienteId === profileId)
+    );
+  });
+}
+
+export async function loadPointsForCustomerFromFirebase(
+  profile: Partial<CustomerProfile>,
+): Promise<AdminPointsRecord[]> {
+  if (!projectId) return [];
+  const profileId = customerIdFromProfile(profile);
+  const docs = await loadPointsFromFirebase();
+  return docs.filter((movement) => movement.clienteId === profileId);
 }
 
 export async function loadCustomersFromFirebase(): Promise<AdminCustomerRecord[]> {
@@ -255,9 +396,23 @@ export async function loadPointsFromFirebase(): Promise<AdminPointsRecord[]> {
 
 export async function updateOrderStatus(orderId: string, status: OrderStatus) {
   const now = new Date().toISOString();
+  const code = statusCode(status);
   await Promise.allSettled([
-    safePatch("pedidos", orderId, { status, actualizadoEn: now, updatedAt: now }),
-    safePatch("comandas", orderId, { estado: status, actualizadoEn: now, updatedAt: now }),
+    safePatch("pedidos", orderId, {
+      status: code,
+      statusText: status,
+      estado: status,
+      estadoCodigo: code,
+      actualizadoEn: now,
+      updatedAt: now,
+    }),
+    safePatch("comandas", orderId, {
+      estado: status,
+      status: code,
+      statusText: status,
+      actualizadoEn: now,
+      updatedAt: now,
+    }),
   ]);
 }
 

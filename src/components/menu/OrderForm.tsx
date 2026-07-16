@@ -7,6 +7,7 @@ import {
   createSavedOrder,
   loadCustomerProfile,
   openWhatsAppOrder,
+  transferInfo,
   type CustomerProfile,
 } from "@/lib/orders";
 import { syncOrderToFirebase } from "@/lib/firebase/rest";
@@ -48,6 +49,8 @@ export function OrderForm() {
 
   const send = () => {
     if (!canSend) return;
+    const whatsappWindow = window.open("about:blank", "_blank");
+    if (whatsappWindow) whatsappWindow.opener = null;
     const customer = {
       ...form,
       name: form.name.trim(),
@@ -67,7 +70,7 @@ export function OrderForm() {
     });
 
     // WhatsApp is the critical path. Everything else is best-effort.
-    openWhatsAppOrder(order);
+    openWhatsAppOrder(order, whatsappWindow);
 
     try {
       completeLocalOrder(order);
@@ -224,6 +227,12 @@ export function OrderForm() {
             </div>
           )}
 
+          {form.paymentMethod === "transferencia" && (
+            <p className="text-[11px] leading-relaxed text-muted-foreground">
+              {transferInfo().instructions}
+            </p>
+          )}
+
           {points >= 35 && (
             <label className="flex items-center justify-between gap-3 rounded-xl border border-black/10 bg-[var(--brand-bg)] px-3 py-2.5 cursor-pointer">
               <span className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wide">
@@ -345,6 +354,12 @@ export function OrderForm() {
               <div className="flex items-center justify-between text-[var(--brand-gold)]">
                 <span className="text-xs uppercase tracking-wider">Puntos</span>
                 <span className="font-semibold">-{formatMXN(pointsToRedeem)}</span>
+              </div>
+            )}
+            {form.deliveryMode === "domicilio" && (
+              <div className="flex items-center justify-between">
+                <span className="text-xs uppercase tracking-wider text-white/60">Envio</span>
+                <span className="text-xs font-semibold text-white/70">Por confirmar</span>
               </div>
             )}
             <div className="flex items-center justify-between pt-1">

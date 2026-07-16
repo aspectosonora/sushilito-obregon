@@ -25,6 +25,7 @@ import {
   loadCustomerProfile,
   loadOrderHistory,
   loadPointsMovements,
+  normalizeSavedOrder,
   saveOrderHistory,
   statusLabel,
   updateLocalOrderStatus,
@@ -357,22 +358,26 @@ function OrdersPanel({
         {orders.length === 0 ? (
           <EmptyState>{loading ? "Cargando pedidos..." : "Aun no hay pedidos guardados."}</EmptyState>
         ) : (
-          orders.map((order) => (
+          orders.map((order) => {
+            const customer = order.customer || {};
+            const items = Array.isArray(order.items) ? order.items : [];
+            const branchName = order.sucursal?.name || "Sin sucursal";
+            return (
             <article key={order.id} className="py-4">
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
                   <div className="font-bold">{order.folio}</div>
                   <div className="text-xs text-white/50">
-                    {new Date(order.createdAt).toLocaleString("es-MX")} - {order.sucursal.name}
+                    {new Date(order.createdAt).toLocaleString("es-MX")} - {branchName}
                   </div>
                   <div className="text-xs text-white/70 mt-1">
-                    {order.customer.name || "Sin nombre"} - {order.customer.phone || "Sin telefono"}
+                    {customer.name || "Sin nombre"} - {customer.phone || "Sin telefono"}
                   </div>
                   <div className="mt-2 text-xs text-white/50">
-                    {order.customer.deliveryMode === "domicilio"
-                      ? `${order.customer.address}, ${order.customer.colony}`
+                    {customer.deliveryMode === "domicilio"
+                      ? `${customer.address || ""}, ${customer.colony || ""}`
                       : "Recoger en sucursal"}{" "}
-                    - Pago: {order.customer.paymentMethod}
+                    - Pago: {customer.paymentMethod || "sin dato"}
                   </div>
                 </div>
                 <div className="text-right">
@@ -391,7 +396,7 @@ function OrdersPanel({
               </div>
 
               <div className="mt-3 rounded-xl bg-black/20 border border-white/10 p-3 text-xs text-white/70">
-                {order.items.map((item) => (
+                {items.map((item) => (
                   <div key={item.lineId} className="flex justify-between gap-3">
                     <span>
                       {item.qty}x {item.name}
@@ -417,7 +422,8 @@ function OrdersPanel({
                 Tracking cliente: {statusLabel(order.status)}
               </div>
             </article>
-          ))
+          );
+          })
         )}
       </div>
     </AdminSection>
@@ -748,9 +754,12 @@ function AdminInput({
 }
 
 function mergeOrders(remote: SavedOrder[], local: SavedOrder[]) {
-  return [...remote, ...local.filter((item) => !remote.some((order) => order.id === item.id))].sort(
-    (a, b) => String(b.createdAt).localeCompare(String(a.createdAt)),
-  );
+  const normalized = [...remote, ...local]
+    .map((order) => normalizeSavedOrder(order))
+    .filter(Boolean) as SavedOrder[];
+  return normalized
+    .filter((item, index, list) => list.findIndex((order) => order.id === item.id) === index)
+    .sort((a, b) => String(b.createdAt).localeCompare(String(a.createdAt)));
 }
 
 function mergePoints(
@@ -759,7 +768,7 @@ function mergePoints(
   orders: SavedOrder[],
 ): AdminPoint[] {
   const orderCustomer = new Map(
-    orders.map((order) => [order.id, customerIdFromPhone(order.customer.phone, order.id)]),
+    orders.map((order) => [order.id, customerIdFromPhone(order.customer?.phone || "", order.id)]),
   );
   const remotePoints = remote.map((point) => ({
     id: point.id,
@@ -807,24 +816,25 @@ function mergeCustomers(
       updatedAt: customer.actualizadoEn || "",
       orderCount: 0,
       totalSpent: 0,
-      points: 0,
+      points: Number(customer.puntosRespaldo || 0),
     });
   });
 
   orders.forEach((order) => {
-    const id = customerIdFromPhone(order.customer.phone, order.id);
+    const id = customerIdFromPhone(order.customer?.phone || "", order.id);
     const existing = map.get(id);
+    const customer = order.customer || {};
     map.set(id, {
       id,
-      name: order.customer.name || existing?.name || "",
-      phone: order.customer.phone || existing?.phone || "",
-      address: order.customer.address || existing?.address || "",
-      colony: order.customer.colony || existing?.colony || "",
-      reference: order.customer.reference || existing?.reference || "",
-      deliveryMode: order.customer.deliveryMode || existing?.deliveryMode || "",
-      lastBranch: order.sucursal.name || existing?.lastBranch || "",
+      name: customer.name || existing?.name || "",
+      phone: customer.phone || existing?.phone || "",
+      address: customer.address || existing?.address || "",
+      colony: customer.colony || existing?.colony || "",
+      reference: customer.reference || existing?.reference || "",
+      deliveryMode: customer.deliveryMode || existing?.deliveryMode || "",
+      lastBranch: order.sucursal?.name || existing?.lastBranch || "",
       lastOrderId: order.id,
-      subscribed: Boolean(order.customer.marketingOptIn || existing?.subscribed),
+      subscribed: Boolean(customer.marketingOptIn || existing?.subscribed),
       updatedAt: order.updatedAt || order.createdAt,
       orderCount: (existing?.orderCount || 0) + 1,
       totalSpent: (existing?.totalSpent || 0) + (order.status === "cancelado" ? 0 : order.total),
@@ -880,19 +890,20 @@ function buildMetrics(orders: SavedOrder[], customers: AdminCustomer[], points: 
 
   const branchMap = new Map<string, { name: string; orders: number; revenue: number }>();
   validOrders.forEach((order) => {
-    const current = branchMap.get(order.sucursal.name) || {
-      name: order.sucursal.name,
+    const branchName = order.sucursal?.name || "Sin sucursal";
+    const current = branchMap.get(branchName) || {
+      name: branchName,
       orders: 0,
       revenue: 0,
     };
     current.orders += 1;
     current.revenue += order.total;
-    branchMap.set(order.sucursal.name, current);
+    branchMap.set(branchName, current);
   });
 
   const productMap = new Map<string, { name: string; qty: number }>();
   validOrders.forEach((order) => {
-    order.items.forEach((item) => {
+    (order.items || []).forEach((item) => {
       const current = productMap.get(item.name) || { name: item.name, qty: 0 };
       current.qty += item.qty;
       productMap.set(item.name, current);
@@ -922,6 +933,6 @@ function buildMetrics(orders: SavedOrder[], customers: AdminCustomer[], points: 
 }
 
 function customerIdFromPhone(phone: string, fallback: string) {
-  const clean = phone.replace(/\D/g, "");
+  const clean = String(phone || "").replace(/\D/g, "");
   return clean ? `tel-${clean}` : `anon-${fallback}`;
 }

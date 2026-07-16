@@ -1,17 +1,46 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { User, Award, History, LogIn, Gift, Sparkles, ShoppingBag, MapPin } from "lucide-react";
+import { useEffect, useState, type ReactNode } from "react";
+import {
+  Award,
+  Gift,
+  History,
+  LogIn,
+  LogOut,
+  Mail,
+  MapPin,
+  ShoppingBag,
+  Sparkles,
+  User,
+} from "lucide-react";
 import { AppHeader } from "@/components/menu/AppHeader";
 import { formatMXN } from "@/data/menu";
 import {
   availablePoints,
   loadCustomerProfile,
   loadOrderHistory,
+  loadPointsMovements,
+  pointsBalance,
   saveCustomerProfile,
   statusLabel,
   type CustomerProfile,
+  type PointsMovement,
   type SavedOrder,
 } from "@/lib/orders";
+import {
+  loadCustomerProfileFromFirebase,
+  loadOrdersForCustomerFromFirebase,
+  loadPointsForCustomerFromFirebase,
+  saveCustomerProfileToFirebase,
+} from "@/lib/firebase/rest";
+import {
+  firebaseAuthReady,
+  handleAuthRedirect,
+  profileFromAuthUser,
+  signInSocial,
+  signOutSocial,
+  watchAuth,
+  type SocialProvider,
+} from "@/lib/firebase/auth";
 
 export const Route = createFileRoute("/cuenta")({
   head: () => ({ meta: [{ title: "Historial y puntos - Sushilito Obregon" }] }),
@@ -22,16 +51,91 @@ function CuentaPage() {
   const [profile, setProfile] = useState<CustomerProfile>(() => loadCustomerProfile());
   const [orders, setOrders] = useState<SavedOrder[]>([]);
   const [points, setPoints] = useState(0);
+  const [authEmail, setAuthEmail] = useState("");
+
+  const refreshFromFirebase = async (baseProfile: CustomerProfile) => {
+    const remoteProfile = await loadCustomerProfileFromFirebase(baseProfile).catch((error) => {
+      console.warn("Perfil Firebase no bloqueo cuenta", error);
+      return null;
+    });
+    const mergedProfile = remoteProfile ? mergeProfile(baseProfile, remoteProfile) : baseProfile;
+    if (remoteProfile) {
+      saveCustomerProfile(mergedProfile);
+      setProfile(mergedProfile);
+    }
+
+    const [remoteOrders, remotePoints] = await Promise.all([
+      loadOrdersForCustomerFromFirebase(mergedProfile).catch((error) => {
+        console.warn("Historial Firebase no bloqueo cuenta", error);
+        return [];
+      }),
+      loadPointsForCustomerFromFirebase(mergedProfile).catch((error) => {
+        console.warn("Puntos Firebase no bloqueo cuenta", error);
+        return [];
+      }),
+    ]);
+    setOrders(mergeOrders(remoteOrders, loadOrderHistory()));
+    setPoints(Math.max(0, pointsBalance(mergePoints(remotePoints, loadPointsMovements()))));
+  };
+
+  const applyAuthProfile = async (authProfile: Partial<CustomerProfile>) => {
+    const nextProfile = mergeProfile(loadCustomerProfile(), authProfile);
+    saveCustomerProfile(nextProfile);
+    setProfile(nextProfile);
+    await saveCustomerProfileToFirebase(nextProfile).catch((error) => {
+      console.warn("Perfil social Firebase no bloqueo cuenta", error);
+    });
+    await refreshFromFirebase(nextProfile);
+  };
 
   useEffect(() => {
-    setProfile(loadCustomerProfile());
+    const localProfile = loadCustomerProfile();
+    setProfile(localProfile);
     setOrders(loadOrderHistory());
     setPoints(Math.max(0, availablePoints()));
+    void refreshFromFirebase(localProfile);
+
+    let unsubscribe: (() => void) | undefined;
+    if (firebaseAuthReady) {
+      handleAuthRedirect()
+        .then((user) => {
+          if (user) void applyAuthProfile(profileFromAuthUser(user));
+        })
+        .catch((error) => console.warn("Redirect auth no bloqueo cuenta", error));
+      void watchAuth((user) => {
+        setAuthEmail(user?.email || "");
+        if (user) void applyAuthProfile(profileFromAuthUser(user));
+      })
+        .then((unsub) => {
+          unsubscribe = unsub;
+        })
+        .catch((error) => console.warn("Auth no disponible", error));
+    }
+
+    return () => unsubscribe?.();
   }, []);
 
   const saveProfile = () => {
     saveCustomerProfile(profile);
     setProfile(loadCustomerProfile());
+    void saveCustomerProfileToFirebase(profile).catch((error) => {
+      console.warn("Perfil Firebase no bloqueo cuenta", error);
+    });
+    void refreshFromFirebase(profile);
+  };
+
+  const login = (provider: SocialProvider) => {
+    if (!firebaseAuthReady) return;
+    void signInSocial(provider)
+      .then((user) => {
+        if (user) void applyAuthProfile(profileFromAuthUser(user));
+      })
+      .catch((error) => console.warn("Login social no disponible", error));
+  };
+
+  const logout = () => {
+    void signOutSocial().catch((error) => console.warn("Cerrar sesion no bloqueo cuenta", error));
+    setAuthEmail("");
   };
 
   return (
@@ -47,20 +151,35 @@ function CuentaPage() {
 
         <div className="rounded-3xl bg-[var(--brand-black)] text-white p-5 relative overflow-hidden shadow-xl shadow-black/20">
           <div className="absolute -right-10 -top-10 size-40 rounded-full bg-[var(--brand-red)]/40 blur-3xl" />
-          <div className="absolute right-3 top-3 text-white/10 font-jp text-2xl">寿司</div>
+          <div className="absolute right-3 top-3 text-white/10 font-jp text-2xl">SUSHI</div>
           <div className="relative flex items-center gap-3">
             <div className="size-14 rounded-2xl bg-[var(--brand-red)] grid place-items-center shadow-lg shadow-[var(--brand-red)]/40">
               <User className="size-7" />
             </div>
             <div>
               <div className="text-[10px] uppercase tracking-[0.2em] text-white/50">
-                {profile.phone ? "Cliente registrado" : "Inicia sesión"}
+                {profile.phone || authEmail ? "Cliente registrado" : "Inicia sesion"}
               </div>
-              <div className="font-bold text-lg">{profile.name || "Acumula puntos y recibe promociones"}</div>
+              <div className="font-bold text-lg">
+                {profile.name || "Acumula puntos y recibe promociones"}
+              </div>
               {profile.phone && <div className="text-xs text-white/60">{profile.phone}</div>}
+              {authEmail && <div className="text-xs text-white/60">{authEmail}</div>}
             </div>
           </div>
-          <div className="mt-5 flex gap-2">
+
+          <div className="mt-5 grid grid-cols-3 gap-2">
+            <SocialButton label="Google" onClick={() => login("google")} disabled={!firebaseAuthReady} />
+            <SocialButton label="Apple" onClick={() => login("apple")} disabled={!firebaseAuthReady} />
+            <SocialButton
+              label="Outlook"
+              icon={<Mail className="size-3.5" />}
+              onClick={() => login("outlook")}
+              disabled={!firebaseAuthReady}
+            />
+          </div>
+
+          <div className="mt-2 flex gap-2">
             <button
               onClick={saveProfile}
               className="flex-1 bg-[var(--brand-red)] hover:bg-white hover:text-[var(--brand-red)] text-white font-bold uppercase tracking-wide text-xs py-3 rounded-xl transition inline-flex items-center justify-center gap-1.5"
@@ -74,6 +193,15 @@ function CuentaPage() {
             >
               Guardar datos
             </button>
+            {authEmail && (
+              <button
+                onClick={logout}
+                className="bg-white/10 hover:bg-white/20 text-white font-bold uppercase tracking-wide text-xs px-3 py-3 rounded-xl transition inline-flex items-center justify-center"
+                aria-label="Cerrar sesion"
+              >
+                <LogOut className="size-4" />
+              </button>
+            )}
           </div>
         </div>
 
@@ -185,8 +313,8 @@ function CuentaPage() {
                     </div>
                     <div className="mt-2 flex items-center gap-1 text-xs text-muted-foreground">
                       <MapPin className="size-3 text-[var(--brand-red)]" /> Sucursal{" "}
-                      {order.sucursal.name} - {order.items.length} productos - {order.pointsEarned}{" "}
-                      pts
+                      {order.sucursal?.name || "Sin sucursal"} - {order.items.length} productos -{" "}
+                      {order.pointsEarned} pts
                     </div>
                     <a
                       href={order.ticketUrl}
@@ -204,6 +332,69 @@ function CuentaPage() {
         </section>
       </div>
     </div>
+  );
+}
+
+function mergeProfile(base: CustomerProfile, incoming: Partial<CustomerProfile>): CustomerProfile {
+  return {
+    ...base,
+    ...Object.fromEntries(
+      Object.entries(incoming).filter(([, value]) => value !== undefined && value !== ""),
+    ),
+  } as CustomerProfile;
+}
+
+function mergeOrders(remote: SavedOrder[], local: SavedOrder[]) {
+  return [...remote, ...local.filter((item) => !remote.some((order) => order.id === item.id))].sort(
+    (a, b) => String(b.createdAt).localeCompare(String(a.createdAt)),
+  );
+}
+
+function mergePoints(
+  remote: {
+    id: string;
+    pedidoId?: string;
+    puntos?: number;
+    tipo?: string;
+    creadoEn?: string;
+    expiresAtMillis?: number;
+  }[],
+  local: PointsMovement[],
+) {
+  const remoteMapped: PointsMovement[] = remote.map((point) => ({
+    id: point.id,
+    orderId: point.pedidoId || "",
+    points: Number(point.puntos || 0),
+    type: point.tipo === "canje" || point.tipo === "ajuste" ? point.tipo : "pedido",
+    createdAt: point.creadoEn || "",
+    expiresAtMillis: point.expiresAtMillis,
+  }));
+  return [
+    ...remoteMapped,
+    ...local.filter((point) => !remoteMapped.some((remotePoint) => remotePoint.id === point.id)),
+  ];
+}
+
+function SocialButton({
+  label,
+  icon = <User className="size-3.5" />,
+  disabled,
+  onClick,
+}: {
+  label: string;
+  icon?: ReactNode;
+  disabled: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      className="bg-white/10 hover:bg-white/20 disabled:opacity-40 text-white font-bold uppercase tracking-wide text-[10px] py-2.5 rounded-xl transition inline-flex items-center justify-center gap-1.5"
+    >
+      {icon}
+      {label}
+    </button>
   );
 }
 
@@ -238,7 +429,7 @@ function Card({
   value,
   sub,
 }: {
-  icon: React.ReactNode;
+  icon: ReactNode;
   title: string;
   value: string;
   sub: string;

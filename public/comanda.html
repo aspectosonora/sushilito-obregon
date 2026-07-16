@@ -53,6 +53,14 @@
         text-align: center;
         font-size: 1.45em;
       }
+      .logo {
+        display: block;
+        width: 34mm;
+        max-height: 20mm;
+        object-fit: contain;
+        margin: 0 auto 4px;
+        filter: grayscale(1) contrast(1.25);
+      }
       h2 {
         text-align: center;
         font-size: 1em;
@@ -160,7 +168,7 @@
         const key = apiKey ? "?key=" + encodeURIComponent(apiKey) : "";
         const url = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/comandas/${encodeURIComponent(orderId)}${key}`;
         const res = await fetch(url);
-        if (!res.ok) return null;
+        if (!res.ok) throw new Error(`Firestore no permitio cargar la comanda (${res.status}).`);
         const json = await res.json();
         return fromFirestoreFields(json.fields || {});
       }
@@ -176,6 +184,14 @@
             productos: order.items,
             subtotal: order.subtotal,
             total: order.total,
+            envio: order.shipping,
+            envioPendiente: order.shippingPending,
+            puntosCanjeados: order.pointsRedeemed,
+            puntosGenerados: order.pointsEarned,
+            transferencia: {
+              instrucciones: order.transferInstructions || "",
+              imagenUrl: order.transferImageUrl || "",
+            },
             estado: order.status,
             creadoEn: order.createdAt,
             expiresAt: order.expiresAt,
@@ -189,12 +205,26 @@
       function lineTotal(item) {
         return Number(item.unitPrice || 0) * Number(item.qty || 0);
       }
-      function render(order) {
+      function expiryMillis(order) {
+        if (!order) return 0;
+        if (Number(order.expiresAtMillis || 0) > 0) return Number(order.expiresAtMillis);
+        const value = order.expiresAt;
+        if (!value) return 0;
+        if (typeof value === "string") return Date.parse(value) || 0;
+        if (typeof value === "number") return value;
+        if (typeof value === "object" && typeof value.seconds === "number") return value.seconds * 1000;
+        return 0;
+      }
+      function paymentLabel(value) {
+        return value === "transferencia" ? "Transferencia" : value === "efectivo" ? "Efectivo" : value || "";
+      }
+      function render(order, loadError) {
         if (!order) {
-          root.innerHTML = '<p class="status">Comanda no encontrada.</p>';
+          root.innerHTML = `<p class="status">Comanda no encontrada.</p>${loadError ? `<p class="center small">${loadError}</p>` : ""}`;
           return;
         }
-        if (Number(order.expiresAtMillis || 0) <= Date.now()) {
+        const expiresAt = expiryMillis(order);
+        if (expiresAt > 0 && expiresAt <= Date.now()) {
           root.innerHTML =
             '<p class="status">Comanda expirada.</p><p class="center small">La vigencia se valida aqui, no desde reglas.</p>';
           return;
@@ -202,7 +232,10 @@
         const items = order.productos || order.items || [];
         const cliente = order.cliente || order.customer || {};
         const sucursal = order.sucursal || {};
+        const transferencia = order.transferencia || {};
+        const metodoPago = order.metodoPago || cliente.paymentMethod || cliente.metodoPago || "";
         root.innerHTML = `
+        <img src="/logo-negro.png" class="logo" alt="Sushilito" />
         <h1>SUSHILITO</h1>
         <h2>COMANDA 58MM</h2>
         <p class="center small">${sucursal.name || sucursal.nombre || ""}</p>
@@ -237,21 +270,45 @@
           .join("")}
         <div class="sep"></div>
         <div class="row"><span>Subtotal</span><strong>${money.format(Number(order.subtotal || 0))}</strong></div>
+        ${
+          order.envioPendiente
+            ? '<div class="row"><span>Envio</span><strong>Por confirmar</strong></div>'
+            : Number(order.envio || 0) > 0
+              ? `<div class="row"><span>Envio</span><strong>${money.format(Number(order.envio || 0))}</strong></div>`
+              : ""
+        }
+        ${
+          Number(order.puntosCanjeados || 0) > 0
+            ? `<div class="row"><span>Puntos</span><strong>-${money.format(Number(order.puntosCanjeados || 0))}</strong></div>`
+            : ""
+        }
         <div class="row total"><span>Total</span><span>${money.format(Number(order.total || 0))}</span></div>
         <div class="sep"></div>
-        <p><strong>Pago:</strong> ${cliente.paymentMethod || cliente.metodoPago || ""}</p>
+        <p><strong>Pago:</strong> ${paymentLabel(metodoPago)}</p>
         ${cliente.cashAmount ? `<p><strong>Paga con:</strong> ${cliente.cashAmount}</p>` : ""}
+        ${
+          metodoPago === "transferencia"
+            ? `<p><strong>Transfer:</strong> ${transferencia.instrucciones || order.transferInstructions || "Datos por confirmar"}</p>`
+            : ""
+        }
+        ${
+          metodoPago === "transferencia" && (transferencia.imagenUrl || order.transferImageUrl)
+            ? `<p class="small"><strong>Imagen:</strong> ${transferencia.imagenUrl || order.transferImageUrl}</p>`
+            : ""
+        }
         ${cliente.notes ? `<p><strong>Notas:</strong> ${cliente.notes}</p>` : ""}
         <div class="sep"></div>
         <p class="center small">Gracias por tu pedido</p>
       `;
       }
       (async function init() {
+        let loadError = "";
         try {
           render((await loadFirestore()) || loadLocal());
         } catch (error) {
           console.warn("Comanda no bloqueo el pedido", error);
-          render(loadLocal());
+          loadError = error && error.message ? error.message : "No se pudo cargar Firestore.";
+          render(loadLocal(), loadError);
         }
       })();
     </script>
