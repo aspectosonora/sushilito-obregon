@@ -645,7 +645,7 @@ function ConfigPanel() {
           Colecciones esperadas: clientes, pedidos, comandas, puntos_movimientos, productos,
           categorias, configuracion.
         </li>
-        <li>Admin PIN: configurar VITE_ADMIN_PIN antes de produccion.</li>
+        <li>Admin PIN: configurado en Vercel con VITE_ADMIN_PIN.</li>
         <li>Fotos: usar Foto URL por ahora; despues se conecta Storage/subida directa.</li>
       </ul>
     </AdminSection>
