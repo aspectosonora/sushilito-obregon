@@ -1,7 +1,7 @@
 import { MapPin, UtensilsCrossed, ShoppingBag, MessageCircle } from "lucide-react";
 
 const steps = [
-  { icon: MapPin, title: "Elige sucursal", desc: "Morelos, Guerrero, Tabasco o Casa Blanca" },
+  { icon: MapPin, title: "Elige sucursal", desc: "Morelos, Guerrero, Tabasco o Navojoa" },
   { icon: UtensilsCrossed, title: "Selecciona productos", desc: "Arma tu pedido del menú" },
   { icon: ShoppingBag, title: "Revisa tu pedido", desc: "Cantidades, extras y total" },
   { icon: MessageCircle, title: "Envía por WhatsApp", desc: "Confirmamos y preparamos" },

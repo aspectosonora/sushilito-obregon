@@ -239,6 +239,19 @@ export function OrderForm() {
             </label>
           )}
 
+          <label className="flex items-center justify-between gap-3 rounded-xl border border-black/10 bg-[var(--brand-bg)] px-3 py-2.5 cursor-pointer">
+            <span className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wide">
+              <Star className="size-4 text-[var(--brand-gold)] fill-[var(--brand-gold)]" />
+              Acumular puntos y recibir promociones
+            </span>
+            <input
+              type="checkbox"
+              checked={form.marketingOptIn}
+              onChange={(event) => setField("marketingOptIn", event.target.checked)}
+              className="size-4 accent-[var(--brand-red)]"
+            />
+          </label>
+
           <div>
             <label className="text-[11px] font-bold uppercase tracking-wider text-[var(--brand-black)]/70">
               Notas
