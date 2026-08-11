@@ -335,7 +335,7 @@ function MenuPage() {
               <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
                 <span className="inline-flex items-center gap-1">
                   <Phone className="size-3 text-[var(--brand-red)]" />
-                  644 413 5070
+                  644 117 9828
                 </span>
                 <span className="inline-flex items-center gap-1">
                   <Clock className="size-3 text-[var(--brand-red)]" />
