@@ -276,19 +276,19 @@ export const sucursales: Sucursal[] = [
   { id: "morelos", name: "Morelos",
     address: "Av. José María Morelos y Pavón 1001, esq. Quintana Roo, Col. Cuauhtémoc, Cd. Obregón, Sonora.",
     phone: "644 117 9828", whatsapp: "526441179828",
-    hours: "Lun a Dom · 12:00 PM - 10:00 PM" },
+    hours: "Lun a Dom · 12:00 PM - 11:00 PM" },
   { id: "guerrero", name: "Guerrero",
     address: "Calle Vicente Guerrero 754, Col. del Valle, Cd. Obregón, Sonora.",
     phone: "644 134 6794", whatsapp: "526441346794",
-    hours: "Lun a Dom · 12:00 PM - 10:00 PM" },
+    hours: "Lun a Dom · 12:00 PM - 11:00 PM" },
   { id: "tabasco", name: "Tabasco",
     address: "Calle Tabasco y Francisco Zarco, Col. Cortinas 3 Sección, Cd. Obregón, Sonora.",
     phone: "644 193 3021", whatsapp: "526441933021",
-    hours: "Lun a Dom · 12:00 PM - 10:00 PM" },
+    hours: "Lun a Dom · 12:00 PM - 11:00 PM" },
   { id: "navojoa", name: "Navojoa",
     address: "Calle Morelos entre García Morales y Toledo, Colonia Reforma, Navojoa, Sonora.",
     phone: "642 109 1561", whatsapp: "526421091561",
-    hours: "Lun a Dom · 12:00 PM - 10:00 PM" },
+    hours: "Lun a Dom · 12:00 PM - 11:00 PM" },
 ];
 
 export const formatMXN = (n: number) =>

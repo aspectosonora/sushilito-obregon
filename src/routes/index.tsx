@@ -339,7 +339,7 @@ function MenuPage() {
                 </span>
                 <span className="inline-flex items-center gap-1">
                   <Clock className="size-3 text-[var(--brand-red)]" />
-                  Lun a Dom · 12:00 PM - 10:00 PM
+                  Lun a Dom · 12:00 PM - 11:00 PM
                 </span>
               </div>
             </div>
@@ -381,7 +381,7 @@ function MenuPage() {
               <p className="text-white/70">
                 Lun a Dom
                 <br />
-                12:00 PM - 10:00 PM
+                12:00 PM - 11:00 PM
               </p>
             </div>
             <div>
