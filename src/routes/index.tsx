@@ -19,6 +19,7 @@ import {
   ChevronRight,
   ArrowLeft,
   LogIn,
+  X,
 } from "lucide-react";
 import heroBrand from "@/assets/hero-brand.png";
 import logoBlanco from "@/assets/logo-blanco.svg";
@@ -53,7 +54,7 @@ const mapDirectionsUrl = (address: string) =>
 function PromotionsStrip({ onOpen }: { onOpen: (product: Product) => void }) {
   return (
     <section className="mx-auto max-w-3xl px-4 mt-5">
-      <div className="flex items-center justify-between gap-3 mb-3">
+      <div className="flex items-center justify-between gap-3 mb-2">
         <div>
           <div className="text-[10px] uppercase tracking-[0.2em] text-[var(--brand-red)] font-bold">
             Promociones
@@ -66,38 +67,35 @@ function PromotionsStrip({ onOpen }: { onOpen: (product: Product) => void }) {
           {promotions.length} promos
         </span>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div className="flex gap-2 overflow-x-auto pb-1 snap-x">
         {promotions.map((promo) => (
           <button
             key={promo.id}
             onClick={() => onOpen(promo)}
-            className="group text-left bg-white rounded-2xl overflow-hidden border border-black/5 shadow-sm hover:shadow-[0_10px_28px_-10px_rgba(226,31,29,0.35)] transition active:scale-[0.99]"
+            className="group snap-start shrink-0 w-[190px] sm:w-[210px] h-20 text-left bg-white rounded-xl overflow-hidden border border-black/10 shadow-sm hover:border-[var(--brand-red)]/40 hover:shadow-[0_10px_24px_-14px_rgba(226,31,29,0.45)] transition active:scale-[0.99] flex"
           >
-            <div className="relative aspect-[16/9] overflow-hidden bg-muted">
+            <div className="relative w-16 h-full shrink-0 overflow-hidden bg-muted">
               <img
                 src={promo.image}
-                alt={promo.name}
+                alt=""
                 className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
                 loading="lazy"
               />
-              <span className="absolute top-2 left-2 rounded-full bg-[var(--brand-gold)] px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-[var(--brand-black)]">
-                Promo
-              </span>
             </div>
-            <div className="p-3">
-              <div className="flex items-start justify-between gap-3">
-                <div className="min-w-0">
-                  <h3 className="font-bold text-[15px] leading-tight">{promo.name}</h3>
-                  <p className="text-xs text-muted-foreground line-clamp-2 mt-1">
-                    {promo.description}
-                  </p>
+            <div className="min-w-0 flex-1 px-2.5 py-2 flex flex-col justify-between">
+              <div>
+                <div className="text-[9px] font-black uppercase tracking-wider text-[var(--brand-red)]">
+                  Promo
                 </div>
-                <span className="font-display text-2xl text-[var(--brand-red)] shrink-0">
+                <h3 className="font-bold text-[12px] leading-tight line-clamp-2">{promo.name}</h3>
+              </div>
+              <div className="flex items-center justify-between gap-2">
+                <span className="font-display text-xl leading-none text-[var(--brand-black)]">
                   {formatMXN(promo.price)}
                 </span>
-              </div>
-              <div className="mt-3 inline-flex items-center justify-center bg-[var(--brand-red)] text-white text-xs font-bold uppercase tracking-wide px-3 py-2 rounded-lg">
-                Agregar
+                <span className="rounded-md bg-[var(--brand-red)] px-2 py-1 text-[10px] font-black uppercase tracking-wide text-white">
+                  Agregar
+                </span>
               </div>
             </div>
           </button>
@@ -111,6 +109,7 @@ function MenuPage() {
   const { sucursal, setSucursalId } = useStore();
   const [selectedCat, setSelectedCat] = useState<string | null>(null);
   const [modalProduct, setModalProduct] = useState<Product | null>(null);
+  const [showPromoPopup, setShowPromoPopup] = useState(true);
 
   const categoryItems = useMemo(
     () => (selectedCat ? products.filter((p) => p.categoryId === selectedCat) : []),
@@ -500,8 +499,40 @@ function MenuPage() {
       </footer>
 
       <ProductModal product={modalProduct} onClose={() => setModalProduct(null)} />
+      {showPromoPopup && <PromoPopup onClose={() => setShowPromoPopup(false)} />}
       <FloatingCartBar />
       <FloatingWhatsApp />
+    </div>
+  );
+}
+
+function PromoPopup({ onClose }: { onClose: () => void }) {
+  return (
+    <div
+      className="fixed inset-0 z-[70] bg-black/85 backdrop-blur-sm px-4 py-5 flex items-center justify-center"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Promociones de la semana"
+      onClick={onClose}
+    >
+      <div
+        className="relative w-full max-w-[560px] max-h-[92vh]"
+        onClick={(event) => event.stopPropagation()}
+      >
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label="Cerrar promociones"
+          className="absolute right-2 top-2 z-10 size-10 rounded-full bg-black/70 text-white grid place-items-center hover:bg-[var(--brand-red)] transition"
+        >
+          <X className="size-7" />
+        </button>
+        <img
+          src="/promo-semana-sushilito.png"
+          alt="Promociones de la semana de Sushilito"
+          className="w-full max-h-[92vh] object-contain rounded-2xl shadow-2xl"
+        />
+      </div>
     </div>
   );
 }
