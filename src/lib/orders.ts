@@ -81,6 +81,7 @@ const transferBankInfo = import.meta.env.VITE_TRANSFER_BANK_INFO as string | und
 const transferImageUrl = import.meta.env.VITE_TRANSFER_IMAGE_URL as string | undefined;
 const COMANDA_TTL_MS = 30 * 24 * 60 * 60 * 1000;
 const POINTS_TTL_MS = 183 * 24 * 60 * 60 * 1000;
+export const POINTS_ENABLED = false;
 
 function readJson<T>(key: string, fallback: T): T {
   if (typeof window === "undefined") return fallback;
@@ -161,9 +162,20 @@ export function pointsBalance(movements: PointsMovement[], now = Date.now()) {
   }, 0);
 }
 
-export function transferInfo() {
+export function transferInfo(sucursal?: Sucursal) {
+  const bank = sucursal?.bank;
+  const branchInstructions = bank
+    ? [
+        `Beneficiario: ${bank.beneficiary}`,
+        `Banco: ${bank.bank}`,
+        `CLABE: ${bank.clabe}`,
+        `No. de cuenta: ${bank.account}`,
+        bank.proofLegend,
+      ].join("\n")
+    : "";
   return {
     instructions:
+      branchInstructions ||
       transferBankInfo?.trim() ||
       "Datos de transferencia por confirmar con la sucursal antes de preparar el pedido.",
     imageUrl: transferImageUrl?.trim() || "",
@@ -223,9 +235,11 @@ export function createSavedOrder(args: {
     .filter((item) => item.isPromotion)
     .reduce((sum, item) => sum + item.unitPrice * item.qty, 0);
   const eligibleSubtotal = Math.max(0, args.subtotal - promoSubtotal);
-  const pointsRedeemed = Math.max(0, Math.min(args.pointsRedeemed ?? 0, args.subtotal));
+  const pointsRedeemed = POINTS_ENABLED
+    ? Math.max(0, Math.min(args.pointsRedeemed ?? 0, args.subtotal))
+    : 0;
   const total = Math.max(0, args.subtotal - pointsRedeemed);
-  const transfer = transferInfo();
+  const transfer = transferInfo(args.sucursal);
   const shippingPending = args.customer.deliveryMode === "domicilio";
 
   return {
@@ -242,7 +256,7 @@ export function createSavedOrder(args: {
     shipping: 0,
     shippingPending,
     pointsRedeemed,
-    pointsEarned: pointsForEligibleSubtotal(eligibleSubtotal),
+    pointsEarned: POINTS_ENABLED ? pointsForEligibleSubtotal(eligibleSubtotal) : 0,
     total,
     status: "recibido",
     statusCode: statusCode("recibido"),
@@ -267,6 +281,8 @@ export function completeLocalOrder(order: SavedOrder) {
   } catch (error) {
     console.warn("Historial local no guardado", error);
   }
+
+  if (!POINTS_ENABLED) return;
 
   try {
     const movements = loadPointsMovements();
@@ -336,13 +352,15 @@ export function buildWhatsAppMessage(order: SavedOrder) {
     lines.push(`*Paga con:* ${order.customer.cashAmount}`);
   }
   if (order.customer.paymentMethod === "transferencia") {
-    lines.push(`*Datos transferencia:* ${order.transferInstructions || transferInfo().instructions}`);
+    lines.push(
+      `*Datos transferencia:* ${order.transferInstructions || transferInfo(order.sucursal).instructions}`,
+    );
     if (order.transferImageUrl) lines.push(`*Imagen transferencia:* ${order.transferImageUrl}`);
   }
   if (order.customer.notes) lines.push(`*Notas:* ${order.customer.notes}`);
   lines.push("");
   if (order.ticketUrl) lines.push(`*Comanda:* ${order.ticketUrl}`);
-  lines.push(`*Puntos generados:* ${order.pointsEarned}`);
+  if (POINTS_ENABLED && order.pointsEarned > 0) lines.push(`*Puntos generados:* ${order.pointsEarned}`);
   return lines.join("\n");
 }
 

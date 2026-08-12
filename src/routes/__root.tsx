@@ -79,7 +79,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1, maximum-scale=1" },
       { name: "theme-color", content: "#111111" },
-      { title: "Sushilito Obregón — Menú digital" },
+      { title: "Pedidos Sushilitos — Menú digital" },
       { name: "description", content: "Sushi de carreta con sabor sonorense. Ordena en línea y recibe por WhatsApp." },
     ],
     links: [

@@ -19,6 +19,7 @@ import {
   loadCustomerProfile,
   loadOrderHistory,
   loadPointsMovements,
+  POINTS_ENABLED,
   pointsBalance,
   saveCustomerProfile,
   statusLabel,
@@ -43,7 +44,7 @@ import {
 } from "@/lib/firebase/auth";
 
 export const Route = createFileRoute("/cuenta")({
-  head: () => ({ meta: [{ title: "Historial y puntos - Sushilito Obregon" }] }),
+  head: () => ({ meta: [{ title: "Mi cuenta - Pedidos Sushilitos" }] }),
   component: CuentaPage,
 });
 
@@ -69,13 +70,19 @@ function CuentaPage() {
         console.warn("Historial Firebase no bloqueo cuenta", error);
         return [];
       }),
-      loadPointsForCustomerFromFirebase(mergedProfile).catch((error) => {
-        console.warn("Puntos Firebase no bloqueo cuenta", error);
-        return [];
-      }),
+      POINTS_ENABLED
+        ? loadPointsForCustomerFromFirebase(mergedProfile).catch((error) => {
+            console.warn("Puntos Firebase no bloqueo cuenta", error);
+            return [];
+          })
+        : Promise.resolve([]),
     ]);
     setOrders(mergeOrders(remoteOrders, loadOrderHistory()));
-    setPoints(Math.max(0, pointsBalance(mergePoints(remotePoints, loadPointsMovements()))));
+    if (POINTS_ENABLED) {
+      setPoints(Math.max(0, pointsBalance(mergePoints(remotePoints, loadPointsMovements()))));
+    } else {
+      setPoints(0);
+    }
   };
 
   const applyAuthProfile = async (authProfile: Partial<CustomerProfile>) => {
@@ -92,7 +99,7 @@ function CuentaPage() {
     const localProfile = loadCustomerProfile();
     setProfile(localProfile);
     setOrders(loadOrderHistory());
-    setPoints(Math.max(0, availablePoints()));
+    if (POINTS_ENABLED) setPoints(Math.max(0, availablePoints()));
     void refreshFromFirebase(localProfile);
 
     let unsubscribe: (() => void) | undefined;
@@ -146,7 +153,7 @@ function CuentaPage() {
           <div className="text-[10px] uppercase tracking-[0.2em] text-[var(--brand-red)] font-bold">
             Mi cuenta
           </div>
-          <h1 className="font-display text-3xl tracking-wide">HISTORIAL Y PUNTOS</h1>
+          <h1 className="font-display text-3xl tracking-wide">MI CUENTA</h1>
         </div>
 
         <div className="rounded-3xl bg-[var(--brand-black)] text-white p-5 relative overflow-hidden shadow-xl shadow-black/20">
@@ -161,7 +168,7 @@ function CuentaPage() {
                 {profile.phone || authEmail ? "Cliente registrado" : "Inicia sesion"}
               </div>
               <div className="font-bold text-lg">
-                {profile.name || "Acumula puntos y recibe promociones"}
+                {profile.name || "Guarda tus datos y recibe promociones"}
               </div>
               {profile.phone && <div className="text-xs text-white/60">{profile.phone}</div>}
               {authEmail && <div className="text-xs text-white/60">{authEmail}</div>}
@@ -205,13 +212,15 @@ function CuentaPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-3">
-          <Card
-            icon={<Award className="size-5 text-[var(--brand-gold)]" />}
-            title="Puntos"
-            value={`${points} pts`}
-            sub="Minimo 35 para canjear"
-          />
+        <div className={POINTS_ENABLED ? "grid grid-cols-2 gap-3" : "grid grid-cols-1 gap-3"}>
+          {POINTS_ENABLED && (
+            <Card
+              icon={<Award className="size-5 text-[var(--brand-gold)]" />}
+              title="Puntos"
+              value={`${points} pts`}
+              sub="Minimo 35 para canjear"
+            />
+          )}
           <Card
             icon={<Gift className="size-5 text-[var(--brand-red)]" />}
             title="Pedidos"
@@ -262,7 +271,7 @@ function CuentaPage() {
                   Quiero recibir promociones
                 </span>
                 <span className="block text-xs text-muted-foreground">
-                  Guardaremos tus datos para puntos, historial y promos de Sushilito.
+                  Guardaremos tus datos para historial y promos de Sushilito.
                 </span>
               </span>
             </label>
@@ -313,8 +322,7 @@ function CuentaPage() {
                     </div>
                     <div className="mt-2 flex items-center gap-1 text-xs text-muted-foreground">
                       <MapPin className="size-3 text-[var(--brand-red)]" /> Sucursal{" "}
-                      {order.sucursal?.name || "Sin sucursal"} - {order.items.length} productos -{" "}
-                      {order.pointsEarned} pts
+                      {order.sucursal?.name || "Sin sucursal"} - {order.items.length} productos
                     </div>
                     <a
                       href={order.ticketUrl}

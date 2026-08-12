@@ -5,7 +5,7 @@ import { OrderForm } from "@/components/menu/OrderForm";
 import { useStore } from "@/lib/store";
 
 export const Route = createFileRoute("/checkout")({
-  head: () => ({ meta: [{ title: "Tu pedido - Sushilito Obregon" }] }),
+  head: () => ({ meta: [{ title: "Tu pedido - Pedidos Sushilitos" }] }),
   component: CheckoutPage,
 });
 

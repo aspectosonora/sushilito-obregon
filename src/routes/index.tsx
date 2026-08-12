@@ -8,7 +8,7 @@ import { FloatingCartBar } from "@/components/menu/FloatingCartBar";
 import { FloatingWhatsApp } from "@/components/menu/FloatingWhatsApp";
 import { Gallery } from "@/components/menu/Gallery";
 import { OrderForm } from "@/components/menu/OrderForm";
-import { categories, products, sucursales, type Product } from "@/data/menu";
+import { categories, formatMXN, products, promotions, sucursales, type Product } from "@/data/menu";
 import { useStore } from "@/lib/store";
 import {
   Clock,
@@ -27,13 +27,13 @@ import logoSushilito from "@/assets/logo-sushilito.png";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Sushilito Obregón — Pide sushi a domicilio" },
+      { title: "Pedidos Sushilitos — Pide sushi a domicilio" },
       {
         name: "description",
         content:
-          "Menú digital de Sushilito Obregón. Elige sucursal, arma tu pedido y envíalo por WhatsApp.",
+          "Menú digital de Pedidos Sushilitos. Elige sucursal, arma tu pedido y envíalo por WhatsApp.",
       },
-      { property: "og:title", content: "Sushilito Obregón — Menú a domicilio" },
+      { property: "og:title", content: "Pedidos Sushilitos — Menú a domicilio" },
       {
         property: "og:description",
         content: "El sushi más sano, rápido y delicioso de Ciudad Obregón.",
@@ -43,6 +43,69 @@ export const Route = createFileRoute("/")({
   }),
   component: MenuPage,
 });
+
+const mapEmbedUrl = (address: string) =>
+  `https://www.google.com/maps?q=${encodeURIComponent(address)}&output=embed`;
+
+const mapDirectionsUrl = (address: string) =>
+  `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
+
+function PromotionsStrip({ onOpen }: { onOpen: (product: Product) => void }) {
+  return (
+    <section className="mx-auto max-w-3xl px-4 mt-5">
+      <div className="flex items-center justify-between gap-3 mb-3">
+        <div>
+          <div className="text-[10px] uppercase tracking-[0.2em] text-[var(--brand-red)] font-bold">
+            Promociones
+          </div>
+          <h2 className="font-display text-2xl tracking-wide uppercase leading-none">
+            Promos de la semana
+          </h2>
+        </div>
+        <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground bg-white px-2 py-1 rounded-full border">
+          {promotions.length} promos
+        </span>
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        {promotions.map((promo) => (
+          <button
+            key={promo.id}
+            onClick={() => onOpen(promo)}
+            className="group text-left bg-white rounded-2xl overflow-hidden border border-black/5 shadow-sm hover:shadow-[0_10px_28px_-10px_rgba(226,31,29,0.35)] transition active:scale-[0.99]"
+          >
+            <div className="relative aspect-[16/9] overflow-hidden bg-muted">
+              <img
+                src={promo.image}
+                alt={promo.name}
+                className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                loading="lazy"
+              />
+              <span className="absolute top-2 left-2 rounded-full bg-[var(--brand-gold)] px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-[var(--brand-black)]">
+                Promo
+              </span>
+            </div>
+            <div className="p-3">
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <h3 className="font-bold text-[15px] leading-tight">{promo.name}</h3>
+                  <p className="text-xs text-muted-foreground line-clamp-2 mt-1">
+                    {promo.description}
+                  </p>
+                </div>
+                <span className="font-display text-2xl text-[var(--brand-red)] shrink-0">
+                  {formatMXN(promo.price)}
+                </span>
+              </div>
+              <div className="mt-3 inline-flex items-center justify-center bg-[var(--brand-red)] text-white text-xs font-bold uppercase tracking-wide px-3 py-2 rounded-lg">
+                Agregar
+              </div>
+            </div>
+          </button>
+        ))}
+      </div>
+    </section>
+  );
+}
 
 function MenuPage() {
   const { sucursal, setSucursalId } = useStore();
@@ -114,7 +177,7 @@ function MenuPage() {
             {/* Logo gigante protagonista */}
             <img
               src={logoSushilito}
-              alt="Sushilito Obregón"
+              alt="Pedidos Sushilitos"
               className="w-64 sm:w-80 h-auto drop-shadow-[0_10px_30px_rgba(0,0,0,0.6)] mb-6"
               draggable={false}
             />
@@ -164,6 +227,8 @@ function MenuPage() {
         </div>
       </section>
 
+      <PromotionsStrip onOpen={setModalProduct} />
+
       {/* INICIA SESION */}
       <section className="mx-auto max-w-3xl px-4 mt-5">
         <div className="rounded-3xl bg-white border border-black/10 shadow-sm px-4 py-3 sm:px-5 sm:py-4 flex items-center gap-4">
@@ -175,7 +240,7 @@ function MenuPage() {
               Inicia sesión
             </div>
             <div className="text-xs sm:text-sm text-[var(--brand-black)]/70 leading-snug">
-              Acumula puntos y recibe promociones
+              Guarda tus datos y recibe promociones
             </div>
           </div>
           <Link
@@ -317,8 +382,8 @@ function MenuPage() {
           <div className="rounded-2xl overflow-hidden bg-white border shadow-sm">
             <div className="aspect-[16/9] w-full bg-[var(--brand-black)]">
               <iframe
-                title="Sushilito Morelos en Google Maps"
-                src="https://www.google.com/maps?q=Av.+Jos%C3%A9+Mar%C3%ADa+Morelos+y+Pav%C3%B3n+1001,+Ciudad+Obreg%C3%B3n&output=embed"
+                title={`Sushilito ${sucursal.name} en Google Maps`}
+                src={mapEmbedUrl(sucursal.address)}
                 className="w-full h-full border-0"
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
@@ -326,21 +391,29 @@ function MenuPage() {
             </div>
             <div className="p-4">
               <div className="text-[10px] uppercase tracking-[0.2em] text-[var(--brand-red)] font-bold">
-                Sucursal Morelos
+                Sucursal {sucursal.name}
               </div>
               <p className="mt-1 text-sm text-foreground/80">
-                Av. José María Morelos y Pavón 1001, esquina con Quintana Roo, Col. Cuauhtémoc,
-                Cdad. Obregón, Sonora.
+                {sucursal.address}
               </p>
               <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
                 <span className="inline-flex items-center gap-1">
                   <Phone className="size-3 text-[var(--brand-red)]" />
-                  644 117 9828
+                  {sucursal.phone}
                 </span>
                 <span className="inline-flex items-center gap-1">
                   <Clock className="size-3 text-[var(--brand-red)]" />
-                  Lun a Dom · 12:00 PM - 11:00 PM
+                  {sucursal.hours}
                 </span>
+                <a
+                  href={mapDirectionsUrl(sucursal.address)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 text-[var(--brand-red)] font-bold"
+                >
+                  <MapPin className="size-3" />
+                  Como llegar
+                </a>
               </div>
             </div>
           </div>
@@ -353,7 +426,7 @@ function MenuPage() {
           <div className="flex items-center gap-3">
             <img src={logoBlanco} alt="Sushilito" className="h-12 w-auto" />
             <div>
-              <div className="font-display text-2xl leading-none">SUSHILITO OBREGÓN</div>
+              <div className="font-display text-2xl leading-none">PEDIDOS SUSHILITOS</div>
               <div className="text-[10px] uppercase tracking-[0.2em] text-[var(--brand-gold)] mt-1">
                 Restaurant Bar · sushi sonorense
               </div>
@@ -409,7 +482,7 @@ function MenuPage() {
           </div>
 
           <div className="mt-8 pt-4 border-t border-white/10 flex flex-wrap items-center justify-between gap-2 text-[10px] uppercase tracking-[0.2em]">
-            <span className="text-white/50">© {new Date().getFullYear()} Sushilito Obregón</span>
+            <span className="text-white/50">© {new Date().getFullYear()} Pedidos Sushilitos</span>
             <span className="text-white/60">
               Powered by{" "}
               <span className="text-[var(--brand-red)] font-black tracking-[0.25em]">CLICKSON</span>

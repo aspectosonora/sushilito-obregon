@@ -20,7 +20,7 @@ export function AppHeader() {
         <div className="mx-auto max-w-3xl px-3 sm:px-4 py-2 flex items-center gap-2 sm:gap-3">
           {/* Logo grande, transparente */}
           <Link to="/" aria-label="Inicio Sushilito" className="shrink-0 flex items-center">
-            <img src={logoSushilito} alt="Sushilito Obregón" className="h-20 sm:h-24 w-auto" />
+            <img src={logoSushilito} alt="Pedidos Sushilitos" className="h-20 sm:h-24 w-auto" />
           </Link>
 
           {/* Sucursal protagonista */}

@@ -5,7 +5,7 @@ import { sucursales } from "@/data/menu";
 import { useStore } from "@/lib/store";
 
 export const Route = createFileRoute("/sucursales")({
-  head: () => ({ meta: [{ title: "Sucursales — Sushilito Obregón" }] }),
+  head: () => ({ meta: [{ title: "Sucursales — Pedidos Sushilitos" }] }),
   component: SucursalesPage,
 });
 

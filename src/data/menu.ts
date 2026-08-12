@@ -21,6 +21,14 @@ export interface Category {
   tagline?: string;
 }
 
+export interface BankInfo {
+  beneficiary: string;
+  bank: string;
+  clabe: string;
+  account: string;
+  proofLegend: string;
+}
+
 export const categories: Category[] = [
   { id: "entradas", name: "Entradas", tagline: "Para abrir apetito" },
   { id: "rollos", name: "Rollos", tagline: "Nuestra especialidad" },
@@ -103,7 +111,56 @@ const MENU_IMG = {
   bebTe: menuImage("bebidas/te.jpg"),
 } as const;
 
+export const promotions: Product[] = [
+  {
+    id: "promo-3-californias-te",
+    categoryId: "promociones",
+    name: "3 Californias + 1 Lt. de Té",
+    price: 420,
+    image: MENU_IMG.rollCalifornia,
+    tags: ["promo", "favorito"],
+    description: "Todos los días. Incluye 3 rollos California y 1 litro de té.",
+  },
+  {
+    id: "promo-platillo-te-lunes",
+    categoryId: "promociones",
+    name: "Platillo + 1/2 Lt. de Té",
+    price: 195,
+    image: MENU_IMG.platTeriyaki,
+    tags: ["promo"],
+    description: "Lunes. Platillo participante con 1/2 litro de té.",
+  },
+  {
+    id: "promo-cali-trad-te-martes",
+    categoryId: "promociones",
+    name: "California Trad. + 1/2 Lt. de Té",
+    price: 155,
+    image: MENU_IMG.rollCalifornia,
+    tags: ["promo"],
+    description: "Martes. California tradicional con 1/2 litro de té.",
+  },
+  {
+    id: "promo-cali-esp-te-martes",
+    categoryId: "promociones",
+    name: "California Esp. + 1/2 Lt. de Té",
+    price: 175,
+    image: MENU_IMG.rollCaliforniaEspecial,
+    tags: ["promo"],
+    description: "Martes. California especial con 1/2 litro de té.",
+  },
+  {
+    id: "promo-boneless-te-jueves",
+    categoryId: "promociones",
+    name: "Boneless + 1/2 Lt. de Té",
+    price: 195,
+    image: MENU_IMG.entBoneless,
+    tags: ["promo"],
+    description: "Jueves. Boneless con 1/2 litro de té.",
+  },
+];
+
 export const products: Product[] = [
+  ...promotions,
   // ===== ENTRADAS =====
   { id: "ent-boneless", categoryId: "entradas", name: "Boneless", price: 195, image: MENU_IMG.entBoneless, tags: ["favorito"],
     description: "Tiras de pechuga de pollo empanizadas y bañadas en salsa Buffalo, BBQ o mixta. 240gr de pollo." },
@@ -270,25 +327,54 @@ export interface Sucursal {
   phone: string;
   whatsapp: string;
   hours: string;
+  bank: BankInfo;
 }
 
 export const sucursales: Sucursal[] = [
   { id: "morelos", name: "Morelos",
     address: "Av. José María Morelos y Pavón 1001, esq. Quintana Roo, Col. Cuauhtémoc, Cd. Obregón, Sonora.",
     phone: "644 117 9828", whatsapp: "526441179828",
-    hours: "Lun a Dom · 12:00 PM - 11:00 PM" },
+    hours: "Lun a Dom · 12:00 PM - 11:00 PM",
+    bank: {
+      beneficiary: "JJP SUSHILITO DE OBREGON S DE RL DE CV",
+      bank: "BBVA",
+      clabe: "012767001124643657",
+      account: "0112464365",
+      proofLegend: "Recuerda mandar tu comprobante para verificar el pago.",
+    } },
   { id: "guerrero", name: "Guerrero",
     address: "Calle Vicente Guerrero 754, Col. del Valle, Cd. Obregón, Sonora.",
     phone: "644 134 6794", whatsapp: "526441346794",
-    hours: "Lun a Dom · 12:00 PM - 11:00 PM" },
+    hours: "Lun a Dom · 12:00 PM - 11:00 PM",
+    bank: {
+      beneficiary: "JJP SUSHILITO DE OBREGON S DE RL DE CV",
+      bank: "BBVA",
+      clabe: "012767001251837239",
+      account: "0125183723",
+      proofLegend: "Recuerda mandar tu comprobante para verificar el pago.",
+    } },
   { id: "tabasco", name: "Tabasco",
     address: "Calle Tabasco y Francisco Zarco, Col. Cortinas 3 Sección, Cd. Obregón, Sonora.",
     phone: "644 193 3021", whatsapp: "526441933021",
-    hours: "Lun a Dom · 12:00 PM - 11:00 PM" },
+    hours: "Lun a Dom · 12:00 PM - 11:00 PM",
+    bank: {
+      beneficiary: "JESUS PEREZ PAREDES",
+      bank: "BBVA",
+      clabe: "012767004890080127",
+      account: "0489008012",
+      proofLegend: "Recuerda mandar tu comprobante para verificar el pago.",
+    } },
   { id: "navojoa", name: "Navojoa",
     address: "Calle Morelos entre García Morales y Toledo, Colonia Reforma, Navojoa, Sonora.",
     phone: "642 109 1561", whatsapp: "526421091561",
-    hours: "Lun a Dom · 12:00 PM - 11:00 PM" },
+    hours: "Lun a Dom · 12:00 PM - 11:00 PM",
+    bank: {
+      beneficiary: "JESUS PEREZ PAREDES",
+      bank: "BBVA",
+      clabe: "012767004878252692",
+      account: "0487825269",
+      proofLegend: "Recuerda mandar tu comprobante para verificar el pago.",
+    } },
 ];
 
 export const formatMXN = (n: number) =>

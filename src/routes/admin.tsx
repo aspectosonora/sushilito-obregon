@@ -21,6 +21,7 @@ import {
 import { categories, formatMXN, products } from "@/data/menu";
 import {
   ORDER_STATUSES,
+  POINTS_ENABLED,
   availablePoints,
   loadCustomerProfile,
   loadOrderHistory,
@@ -117,7 +118,9 @@ function AdminPage() {
       { id: "resumen" as const, icon: BarChart3, label: "Resumen", count: formatMXN(metrics.revenue) },
       { id: "pedidos" as const, icon: Package, label: "Pedidos", count: `${orders.length}` },
       { id: "clientes" as const, icon: Users, label: "Clientes", count: `${customers.length}` },
-      { id: "puntos" as const, icon: Award, label: "Puntos", count: `${metrics.activePoints}` },
+      ...(POINTS_ENABLED
+        ? [{ id: "puntos" as const, icon: Award, label: "Puntos", count: `${metrics.activePoints}` }]
+        : []),
       { id: "productos" as const, icon: UtensilsCrossed, label: "Productos", count: `${products.length}` },
       { id: "categorias" as const, icon: Tag, label: "Categorias", count: `${categories.length}` },
       {
@@ -142,15 +145,19 @@ function AdminPage() {
           console.warn("Clientes Firebase no disponibles", error);
           return [];
         }),
-        loadPointsFromFirebase().catch((error) => {
-          console.warn("Puntos Firebase no disponibles", error);
-          return [];
-        }),
+        POINTS_ENABLED
+          ? loadPointsFromFirebase().catch((error) => {
+              console.warn("Puntos Firebase no disponibles", error);
+              return [];
+            })
+          : Promise.resolve([]),
       ]);
 
       const localOrders = loadOrderHistory();
       const mergedOrders = mergeOrders(remoteOrders, localOrders);
-      const mergedPoints = mergePoints(remotePoints, loadPointsMovements(), mergedOrders);
+      const mergedPoints = POINTS_ENABLED
+        ? mergePoints(remotePoints, loadPointsMovements(), mergedOrders)
+        : [];
       const mergedCustomers = mergeCustomers(remoteCustomers, mergedOrders, mergedPoints);
 
       setOrders(mergedOrders);
@@ -239,7 +246,7 @@ function AdminPage() {
       <div className="mx-auto max-w-6xl px-4 py-8">
         <h1 className="font-display text-4xl">Sushilito Admin</h1>
         <p className="text-white/60 text-sm mt-1">
-          Pedidos, clientes, puntos, estadisticas y configuracion operativa.
+          Pedidos, clientes, estadisticas y configuracion operativa.
         </p>
 
         <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-7 gap-3 mt-6">
@@ -267,7 +274,7 @@ function AdminPage() {
           <OrdersPanel orders={orders} loading={loading} onChangeStatus={changeStatus} />
         )}
         {tab === "clientes" && <CustomersPanel customers={customers} />}
-        {tab === "puntos" && <PointsPanel points={points} customers={customers} />}
+        {POINTS_ENABLED && tab === "puntos" && <PointsPanel points={points} customers={customers} />}
         {tab === "productos" && (
           <ProductsPanel productDraft={productDraft} setProductDraft={setProductDraft} />
         )}
@@ -287,7 +294,9 @@ function SummaryPanel({ metrics }: { metrics: ReturnType<typeof buildMetrics> })
         <MetricCard icon={<DollarSign />} label="Ventas" value={formatMXN(metrics.revenue)} />
         <MetricCard icon={<Package />} label="Pedidos" value={String(metrics.totalOrders)} />
         <MetricCard icon={<Users />} label="Clientes" value={String(metrics.totalCustomers)} />
-        <MetricCard icon={<Award />} label="Puntos activos" value={`${metrics.activePoints} pts`} />
+        {POINTS_ENABLED && (
+          <MetricCard icon={<Award />} label="Puntos activos" value={`${metrics.activePoints} pts`} />
+        )}
       </div>
 
       <div className="grid lg:grid-cols-3 gap-4">
@@ -337,7 +346,9 @@ function SummaryPanel({ metrics }: { metrics: ReturnType<typeof buildMetrics> })
       <div className="grid md:grid-cols-3 gap-3">
         <MetricCard icon={<TrendingUp />} label="Ticket promedio" value={formatMXN(metrics.avgTicket)} />
         <MetricCard icon={<UserCheck />} label="Suscritos" value={String(metrics.subscribed)} />
-        <MetricCard icon={<Award />} label="Puntos emitidos" value={`${metrics.issuedPoints} pts`} />
+        {POINTS_ENABLED && (
+          <MetricCard icon={<Award />} label="Puntos emitidos" value={`${metrics.issuedPoints} pts`} />
+        )}
       </div>
     </section>
   );
@@ -456,10 +467,10 @@ function CustomersPanel({ customers }: { customers: AdminCustomer[] }) {
                     {customer.address || "Sin direccion"} {customer.reference ? `- ${customer.reference}` : ""}
                   </div>
                 </div>
-                <div className="grid grid-cols-3 gap-2 text-center text-xs">
+                <div className={POINTS_ENABLED ? "grid grid-cols-3 gap-2 text-center text-xs" : "grid grid-cols-2 gap-2 text-center text-xs"}>
                   <MiniStat label="Pedidos" value={String(customer.orderCount)} />
                   <MiniStat label="Total" value={formatMXN(customer.totalSpent)} />
-                  <MiniStat label="Puntos" value={`${customer.points}`} />
+                  {POINTS_ENABLED && <MiniStat label="Puntos" value={`${customer.points}`} />}
                 </div>
               </div>
               <div className="mt-3 flex flex-wrap gap-2 text-[10px] uppercase tracking-wide">

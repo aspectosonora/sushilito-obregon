@@ -2,6 +2,7 @@ import type { Category, Product } from "@/data/menu";
 import type { CustomerProfile, OrderStatus, SavedOrder } from "@/lib/orders";
 import {
   EMPTY_CUSTOMER,
+  POINTS_ENABLED,
   clearPendingFirebaseOrder,
   normalizeSavedOrder,
   normalizeStatus,
@@ -248,7 +249,9 @@ export async function syncOrderToFirebase(order: SavedOrder): Promise<FirebaseSy
         customerToFirestore(cid, order.customer, now, {
           ultimaSucursal: order.sucursal.id,
           ultimoPedidoId: order.id,
-          puntosRespaldo: order.pointsEarned - order.pointsRedeemed,
+          ...(POINTS_ENABLED
+            ? { puntosRespaldo: order.pointsEarned - order.pointsRedeemed }
+            : {}),
         }),
       ),
       safePatch("comandas", order.id, {
@@ -277,7 +280,7 @@ export async function syncOrderToFirebase(order: SavedOrder): Promise<FirebaseSy
         expiresAt: order.expiresAt,
         expiresAtMillis: order.expiresAtMillis,
       }),
-      order.pointsEarned > 0
+      POINTS_ENABLED && order.pointsEarned > 0
         ? safePatch("puntos_movimientos", `${order.id}-earn`, {
             pedidoId: order.id,
             clienteId: cid,
@@ -287,7 +290,7 @@ export async function syncOrderToFirebase(order: SavedOrder): Promise<FirebaseSy
             expiresAtMillis: Date.now() + 183 * 24 * 60 * 60 * 1000,
           })
         : Promise.resolve(true),
-      order.pointsRedeemed > 0
+      POINTS_ENABLED && order.pointsRedeemed > 0
         ? safePatch("puntos_movimientos", `${order.id}-redeem`, {
             pedidoId: order.id,
             clienteId: cid,

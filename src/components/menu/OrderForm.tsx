@@ -7,6 +7,7 @@ import {
   createSavedOrder,
   loadCustomerProfile,
   openWhatsAppOrder,
+  POINTS_ENABLED,
   transferInfo,
   type CustomerProfile,
 } from "@/lib/orders";
@@ -20,7 +21,6 @@ import {
   Banknote,
   Building2,
   Trash2,
-  Star,
 } from "lucide-react";
 
 export function OrderForm() {
@@ -31,10 +31,11 @@ export function OrderForm() {
 
   useEffect(() => {
     setForm(loadCustomerProfile());
-    setPoints(Math.max(0, availablePoints()));
+    if (POINTS_ENABLED) setPoints(Math.max(0, availablePoints()));
   }, []);
 
-  const pointsToRedeem = redeemPoints && points >= 35 ? Math.min(points, subtotal) : 0;
+  const pointsToRedeem =
+    POINTS_ENABLED && redeemPoints && points >= 35 ? Math.min(points, subtotal) : 0;
   const total = Math.max(0, subtotal - pointsToRedeem);
   const canSend =
     cart.length > 0 &&
@@ -74,7 +75,7 @@ export function OrderForm() {
 
     try {
       completeLocalOrder(order);
-      setPoints(Math.max(0, availablePoints()));
+      if (POINTS_ENABLED) setPoints(Math.max(0, availablePoints()));
     } catch (error) {
       console.warn("Historial/perfil/puntos no bloquearon WhatsApp", error);
     }
@@ -228,16 +229,15 @@ export function OrderForm() {
           )}
 
           {form.paymentMethod === "transferencia" && (
-            <p className="text-[11px] leading-relaxed text-muted-foreground">
-              {transferInfo().instructions}
+            <p className="text-[11px] leading-relaxed text-muted-foreground whitespace-pre-line">
+              {transferInfo(sucursal).instructions}
             </p>
           )}
 
-          {points >= 35 && (
+          {POINTS_ENABLED && points >= 35 && (
             <label className="flex items-center justify-between gap-3 rounded-xl border border-black/10 bg-[var(--brand-bg)] px-3 py-2.5 cursor-pointer">
               <span className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wide">
-                <Star className="size-4 text-[var(--brand-gold)] fill-[var(--brand-gold)]" /> Usar{" "}
-                {Math.min(points, subtotal)} puntos
+                Usar {Math.min(points, subtotal)} puntos
               </span>
               <input
                 type="checkbox"
@@ -250,8 +250,7 @@ export function OrderForm() {
 
           <label className="flex items-center justify-between gap-3 rounded-xl border border-black/10 bg-[var(--brand-bg)] px-3 py-2.5 cursor-pointer">
             <span className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wide">
-              <Star className="size-4 text-[var(--brand-gold)] fill-[var(--brand-gold)]" />
-              Acumular puntos y recibir promociones
+              Guardar mis datos y recibir promociones
             </span>
             <input
               type="checkbox"
