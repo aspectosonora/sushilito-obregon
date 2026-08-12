@@ -72,28 +72,29 @@ function PromotionsStrip({ onOpen }: { onOpen: (product: Product) => void }) {
           <button
             key={promo.id}
             onClick={() => onOpen(promo)}
-            className="group snap-start shrink-0 w-[190px] sm:w-[210px] h-20 text-left bg-white rounded-xl overflow-hidden border border-black/10 shadow-sm hover:border-[var(--brand-red)]/40 hover:shadow-[0_10px_24px_-14px_rgba(226,31,29,0.45)] transition active:scale-[0.99] flex"
+            className="group relative snap-start shrink-0 w-[190px] sm:w-[210px] h-20 text-left rounded-xl overflow-hidden border-2 border-[var(--brand-red)] shadow-[0_10px_28px_-14px_rgba(226,31,29,0.9)] hover:shadow-[0_14px_32px_-12px_rgba(226,31,29,1)] transition active:scale-[0.99]"
           >
-            <div className="relative w-16 h-full shrink-0 overflow-hidden bg-muted">
-              <img
-                src={promo.image}
-                alt=""
-                className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
-                loading="lazy"
-              />
-            </div>
-            <div className="min-w-0 flex-1 px-2.5 py-2 flex flex-col justify-between">
-              <div>
-                <div className="text-[9px] font-black uppercase tracking-wider text-[var(--brand-red)]">
+            <img
+              src={promo.image}
+              alt=""
+              className="absolute inset-0 w-full h-full object-cover opacity-85 group-hover:scale-105 transition duration-500"
+              loading="lazy"
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/68 to-black/30" />
+            <div className="relative z-10 h-full px-3 py-2 flex flex-col justify-between">
+              <div className="min-w-0">
+                <div className="text-[9px] font-black uppercase tracking-wider text-[var(--brand-red)] drop-shadow">
                   Promo
                 </div>
-                <h3 className="font-bold text-[12px] leading-tight line-clamp-2">{promo.name}</h3>
+                <h3 className="font-black text-white text-[12px] leading-tight line-clamp-2 drop-shadow">
+                  {promo.name}
+                </h3>
               </div>
-              <div className="flex items-center justify-between gap-2">
-                <span className="font-display text-xl leading-none text-[var(--brand-black)]">
+              <div className="flex items-end justify-between gap-2">
+                <span className="font-display text-2xl leading-none text-white drop-shadow">
                   {formatMXN(promo.price)}
                 </span>
-                <span className="rounded-md bg-[var(--brand-red)] px-2 py-1 text-[10px] font-black uppercase tracking-wide text-white">
+                <span className="rounded-md bg-[var(--brand-red)] px-2 py-1 text-[9px] font-black uppercase tracking-wide text-white shadow">
                   Agregar
                 </span>
               </div>

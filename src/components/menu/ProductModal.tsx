@@ -3,7 +3,7 @@ import { Minus, Plus, X } from "lucide-react";
 import {
   Dialog, DialogContent, DialogTitle, DialogDescription,
 } from "@/components/ui/dialog";
-import type { Product } from "@/data/menu";
+import type { Product, ProductOption } from "@/data/menu";
 import { formatMXN } from "@/data/menu";
 import { useStore } from "@/lib/store";
 import type { CartItem } from "@/lib/store";
@@ -12,16 +12,26 @@ export function ProductModal({ product, onClose }: { product: Product | null; on
   const { addItem } = useStore();
   const [qty, setQty] = useState(1);
   const [extras, setExtras] = useState<CartItem["extras"]>([]);
+  const [selectedOptions, setSelectedOptions] = useState<Record<string, ProductOption>>({});
   const [notes, setNotes] = useState("");
 
   useEffect(() => {
-    if (product) { setQty(1); setExtras([]); setNotes(""); }
+    if (product) { setQty(1); setExtras([]); setSelectedOptions({}); setNotes(""); }
   }, [product?.id]);
 
   if (!product) return null;
 
-  const extrasTotal = extras.reduce((a, e) => a + e.priceDelta, 0);
+  const optionEntries = Object.entries(selectedOptions).map(([groupId, option]) => {
+    const group = product.optionGroups?.find((item) => item.id === groupId);
+    return {
+      id: `${groupId}:${option.id}`,
+      label: group ? `${group.title}: ${option.label}` : option.label,
+      priceDelta: option.priceDelta,
+    };
+  });
+  const extrasTotal = [...extras, ...optionEntries].reduce((a, e) => a + e.priceDelta, 0);
   const total = (product.price + extrasTotal) * qty;
+  const missingRequired = product.optionGroups?.some((group) => group.required && !selectedOptions[group.id]);
 
   const toggleExtra = (id: string) => {
     const opt = product.extras?.find(e => e.id === id);
@@ -32,7 +42,8 @@ export function ProductModal({ product, onClose }: { product: Product | null; on
   };
 
   const handleAdd = () => {
-    addItem(product, qty, extras, notes.trim() || undefined);
+    if (missingRequired) return;
+    addItem(product, qty, [...optionEntries, ...extras], notes.trim() || undefined);
     onClose();
   };
 
@@ -50,6 +61,41 @@ export function ProductModal({ product, onClose }: { product: Product | null; on
           <DialogTitle className="text-xl font-bold">{product.name}</DialogTitle>
           <DialogDescription className="text-sm mt-1">{product.description}</DialogDescription>
           <div className="mt-2 text-lg font-bold text-[var(--brand-red)]">{formatMXN(product.price)}</div>
+
+          {product.optionGroups && product.optionGroups.length > 0 && (
+            <div className="mt-5 space-y-4">
+              {product.optionGroups.map((group) => (
+                <div key={group.id}>
+                  <div className="text-sm font-semibold mb-2">
+                    {group.title}
+                    {group.required && <span className="text-[var(--brand-red)]"> *</span>}
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    {group.options.map((option) => {
+                      const checked = selectedOptions[group.id]?.id === option.id;
+                      return (
+                        <label
+                          key={option.id}
+                          className={`flex items-center gap-2 p-3 rounded-xl border cursor-pointer transition ${checked ? "border-[var(--brand-red)] bg-[var(--brand-red)]/5" : "border-border hover:border-[var(--brand-black)]/40"}`}
+                        >
+                          <input
+                            type="radio"
+                            name={group.id}
+                            checked={checked}
+                            onChange={() =>
+                              setSelectedOptions((current) => ({ ...current, [group.id]: option }))
+                            }
+                            className="size-4 accent-[var(--brand-red)]"
+                          />
+                          <span className="text-sm leading-tight">{option.label}</span>
+                        </label>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
 
           {product.extras && product.extras.length > 0 && (
             <div className="mt-5">
@@ -100,9 +146,10 @@ export function ProductModal({ product, onClose }: { product: Product | null; on
           </div>
           <button
             onClick={handleAdd}
-            className="flex-1 inline-flex items-center justify-between bg-[var(--brand-red)] hover:bg-[var(--brand-black)] text-white font-semibold px-4 py-3 rounded-xl transition"
+            disabled={missingRequired}
+            className="flex-1 inline-flex items-center justify-between bg-[var(--brand-red)] hover:bg-[var(--brand-black)] disabled:opacity-45 disabled:cursor-not-allowed text-white font-semibold px-4 py-3 rounded-xl transition"
           >
-            <span>Agregar al pedido</span>
+            <span>{missingRequired ? "Elige opciones" : "Agregar al pedido"}</span>
             <span>{formatMXN(total)}</span>
           </button>
         </div>

@@ -4,6 +4,13 @@ export type ProductTag = "horneado" | "picante" | "favorito" | "promo" | "nuevo"
 
 export interface ProductOption { id: string; label: string; priceDelta: number; }
 
+export interface ProductOptionGroup {
+  id: string;
+  title: string;
+  required?: boolean;
+  options: ProductOption[];
+}
+
 export interface Product {
   id: string;
   categoryId: string;
@@ -13,6 +20,7 @@ export interface Product {
   image: string;
   tags?: ProductTag[];
   extras?: ProductOption[];
+  optionGroups?: ProductOptionGroup[];
 }
 
 export interface Category {
@@ -109,7 +117,68 @@ const MENU_IMG = {
   bebLimonada: menuImage("bebidas/limonada.jpg"),
   bebRefresco: menuImage("bebidas/refresco.jpg"),
   bebTe: menuImage("bebidas/te.jpg"),
+  promo3Californias: menuImage("promos/promo-3-californias-te.png"),
+  promoPlatillo: menuImage("promos/promo-platillo-te.png"),
+  promoCaliTrad: menuImage("promos/promo-cali-trad-te.png"),
+  promoCaliEsp: menuImage("promos/promo-cali-esp-te.png"),
+  promoBoneless: menuImage("promos/promo-boneless-te.png"),
 } as const;
+
+const PREPARACION_OPTIONS: ProductOption[] = [
+  { id: "empanizado", label: "Empanizado", priceDelta: 0 },
+  { id: "natural", label: "Natural", priceDelta: 0 },
+  { id: "mitad-mitad", label: "Mitad y mitad", priceDelta: 0 },
+];
+
+const ALGA_OPTIONS: ProductOption[] = [
+  { id: "con-alga", label: "Con alga", priceDelta: 0 },
+  { id: "sin-alga", label: "Sin alga", priceDelta: 0 },
+];
+
+const CALIFORNIA_TRAD_INGREDIENT_OPTIONS: ProductOption[] = [
+  "Res",
+  "Marlin",
+  "Tocino",
+  "Pollo",
+  "Plátano",
+  "Chile toreado",
+  "Camarón",
+  "Surimi",
+  "Tampico",
+].map((label) => ({ id: label.toLowerCase().replace(/\s+/g, "-"), label, priceDelta: 0 }));
+
+const CALIFORNIA_ESP_INGREDIENT_OPTIONS: ProductOption[] = [
+  "Salmón",
+  "Atún",
+  "Ostión",
+  "Pulpo",
+].map((label) => ({ id: label.toLowerCase().replace(/\s+/g, "-"), label, priceDelta: 0 }));
+
+const BONELESS_SAUCE_OPTIONS: ProductOption[] = [
+  { id: "buffalo", label: "Buffalo", priceDelta: 0 },
+  { id: "bbq", label: "BBQ", priceDelta: 0 },
+  { id: "mixta", label: "Mixta", priceDelta: 0 },
+];
+
+const rollOptionGroups = (prefix = "Rollo"): ProductOptionGroup[] => [
+  { id: `${prefix}-preparacion`, title: `${prefix} - Preparación`, required: true, options: PREPARACION_OPTIONS },
+  { id: `${prefix}-alga`, title: `${prefix} - Alga`, required: true, options: ALGA_OPTIONS },
+];
+
+const californiaOptionGroups = (
+  prefix: string,
+  ingredientOptions = CALIFORNIA_TRAD_INGREDIENT_OPTIONS,
+): ProductOptionGroup[] => [
+  { id: `${prefix}-ingrediente`, title: `${prefix} - Ingrediente`, required: true, options: ingredientOptions },
+  ...rollOptionGroups(prefix),
+];
+
+const bonelessOptionGroup: ProductOptionGroup = {
+  id: "boneless-salsa",
+  title: "Salsa boneless",
+  required: true,
+  options: BONELESS_SAUCE_OPTIONS,
+};
 
 export const promotions: Product[] = [
   {
@@ -117,49 +186,81 @@ export const promotions: Product[] = [
     categoryId: "promociones",
     name: "3 Californias + 1 Lt. de Té",
     price: 420,
-    image: MENU_IMG.rollCalifornia,
+    image: MENU_IMG.promo3Californias,
     tags: ["promo", "favorito"],
     description: "Todos los días. Incluye 3 rollos California y 1 litro de té.",
+    optionGroups: [
+      ...californiaOptionGroups("California 1"),
+      ...californiaOptionGroups("California 2"),
+      ...californiaOptionGroups("California 3"),
+    ],
   },
   {
     id: "promo-platillo-te-lunes",
     categoryId: "promociones",
     name: "Platillo + 1/2 Lt. de Té",
     price: 195,
-    image: MENU_IMG.platTeriyaki,
+    image: MENU_IMG.promoPlatillo,
     tags: ["promo"],
     description: "Lunes. Platillo participante con 1/2 litro de té.",
+    optionGroups: [
+      {
+        id: "platillo-participante",
+        title: "Platillo participante",
+        required: true,
+        options: [
+          { id: "teriyaki", label: "Teriyaki", priceDelta: 0 },
+          { id: "tepanyaki", label: "Tepanyaki", priceDelta: 0 },
+          { id: "japan", label: "Japan", priceDelta: 0 },
+          { id: "yakimeshi-especial", label: "Yakimeshi Especial", priceDelta: 0 },
+          { id: "gohan-especial", label: "Gohan Especial", priceDelta: 0 },
+        ],
+      },
+      {
+        id: "platillo-ingrediente",
+        title: "Ingrediente",
+        required: true,
+        options: [
+          { id: "pollo", label: "Pollo", priceDelta: 0 },
+          { id: "res", label: "Res", priceDelta: 0 },
+          { id: "camaron", label: "Camaron", priceDelta: 0 },
+        ],
+      },
+    ],
   },
   {
     id: "promo-cali-trad-te-martes",
     categoryId: "promociones",
     name: "California Trad. + 1/2 Lt. de Té",
     price: 155,
-    image: MENU_IMG.rollCalifornia,
+    image: MENU_IMG.promoCaliTrad,
     tags: ["promo"],
     description: "Martes. California tradicional con 1/2 litro de té.",
+    optionGroups: californiaOptionGroups("California tradicional"),
   },
   {
     id: "promo-cali-esp-te-martes",
     categoryId: "promociones",
     name: "California Esp. + 1/2 Lt. de Té",
     price: 175,
-    image: MENU_IMG.rollCaliforniaEspecial,
+    image: MENU_IMG.promoCaliEsp,
     tags: ["promo"],
     description: "Martes. California especial con 1/2 litro de té.",
+    optionGroups: californiaOptionGroups("California especial", CALIFORNIA_ESP_INGREDIENT_OPTIONS),
   },
   {
     id: "promo-boneless-te-jueves",
     categoryId: "promociones",
     name: "Boneless + 1/2 Lt. de Té",
     price: 195,
-    image: MENU_IMG.entBoneless,
+    image: MENU_IMG.promoBoneless,
     tags: ["promo"],
     description: "Jueves. Boneless con 1/2 litro de té.",
+    optionGroups: [bonelessOptionGroup],
   },
 ];
 
-export const products: Product[] = [
+const baseProducts: Product[] = [
   ...promotions,
   // ===== ENTRADAS =====
   { id: "ent-boneless", categoryId: "entradas", name: "Boneless", price: 195, image: MENU_IMG.entBoneless, tags: ["favorito"],
@@ -319,6 +420,28 @@ export const products: Product[] = [
   { id: "beb-te-medio", categoryId: "bebidas", name: "Té 500ml", price: 40, image: MENU_IMG.bebTe, description: "" },
   { id: "beb-te-litro", categoryId: "bebidas", name: "Té 1L", price: 50, image: MENU_IMG.bebTe, description: "" },
 ];
+
+function withMenuOptions(product: Product): Product {
+  const optionGroups = [...(product.optionGroups ?? [])];
+
+  if (product.id === "rol-cali-trad") {
+    optionGroups.push(...californiaOptionGroups("California tradicional"));
+  } else if (product.id === "rol-cali-especial") {
+    optionGroups.push(
+      ...californiaOptionGroups("California especial", CALIFORNIA_ESP_INGREDIENT_OPTIONS),
+    );
+  } else if (product.categoryId === "rollos" && product.id !== "rol-tampico") {
+    optionGroups.push(...rollOptionGroups("Rollo"));
+  }
+
+  if (["ent-boneless", "ent-ensalada-boneless"].includes(product.id)) {
+    optionGroups.push(bonelessOptionGroup);
+  }
+
+  return optionGroups.length ? { ...product, optionGroups } : product;
+}
+
+export const products: Product[] = baseProducts.map(withMenuOptions);
 
 export interface Sucursal {
   id: string;
