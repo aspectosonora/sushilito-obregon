@@ -21,6 +21,7 @@ export interface Product {
   tags?: ProductTag[];
   extras?: ProductOption[];
   optionGroups?: ProductOptionGroup[];
+  activeDays?: number[];
 }
 
 export interface Category {
@@ -188,6 +189,7 @@ export const promotions: Product[] = [
     price: 420,
     image: MENU_IMG.promo3Californias,
     tags: ["promo", "favorito"],
+    activeDays: [0, 1, 2, 3, 4, 5, 6],
     description: "Todos los días. Incluye 3 rollos California y 1 litro de té.",
     optionGroups: [
       ...californiaOptionGroups("California 1"),
@@ -202,6 +204,7 @@ export const promotions: Product[] = [
     price: 195,
     image: MENU_IMG.promoPlatillo,
     tags: ["promo"],
+    activeDays: [1],
     description: "Lunes. Platillo participante con 1/2 litro de té.",
     optionGroups: [
       {
@@ -235,6 +238,7 @@ export const promotions: Product[] = [
     price: 155,
     image: MENU_IMG.promoCaliTrad,
     tags: ["promo"],
+    activeDays: [2],
     description: "Martes. California tradicional con 1/2 litro de té.",
     optionGroups: californiaOptionGroups("California tradicional"),
   },
@@ -245,6 +249,7 @@ export const promotions: Product[] = [
     price: 175,
     image: MENU_IMG.promoCaliEsp,
     tags: ["promo"],
+    activeDays: [2],
     description: "Martes. California especial con 1/2 litro de té.",
     optionGroups: californiaOptionGroups("California especial", CALIFORNIA_ESP_INGREDIENT_OPTIONS),
   },
@@ -255,6 +260,7 @@ export const promotions: Product[] = [
     price: 195,
     image: MENU_IMG.promoBoneless,
     tags: ["promo"],
+    activeDays: [4],
     description: "Jueves. Boneless con 1/2 litro de té.",
     optionGroups: [bonelessOptionGroup],
   },
