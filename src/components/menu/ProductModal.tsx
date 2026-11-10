@@ -99,7 +99,8 @@ export function ProductModal({ product, onClose }: { product: Product | null; on
 
           {product.extras && product.extras.length > 0 && (
             <div className="mt-5">
-              <div className="text-sm font-semibold mb-2">Extras</div>
+              <div className="text-sm font-semibold mb-1">Extras</div>
+              <p className="text-xs text-muted-foreground mb-2">Selecciona todos los extras que quieras agregar.</p>
               <div className="space-y-1.5">
                 {product.extras.map(ex => {
                   const checked = !!extras.find(e => e.id === ex.id);

@@ -181,6 +181,64 @@ const bonelessOptionGroup: ProductOptionGroup = {
   options: BONELESS_SAUCE_OPTIONS,
 };
 
+// Extras tomados del catálogo operativo. Se mantienen separados de las
+// decisiones sin costo (preparación, alga e ingrediente) para que el total
+// refleje cada agregado que el cliente marque.
+const STANDARD_ROLL_EXTRAS: ProductOption[] = [
+  { id: "alga-por-fuera", label: "Alga por fuera", priceDelta: 5 },
+  { id: "camaron-empanizado-dentro", label: "Camarón empanizado por dentro", priceDelta: 5 },
+  { id: "extra-aguacate", label: "Extra aguacate", priceDelta: 35 },
+  { id: "extra-camaron", label: "Extra camarón", priceDelta: 40 },
+  { id: "extra-chiles-toreados", label: "Extra chiles toreados", priceDelta: 35 },
+  { id: "extra-manchego", label: "Extra manchego", priceDelta: 35 },
+  { id: "extra-marlin", label: "Extra marlin", priceDelta: 40 },
+  { id: "extra-ostion", label: "Extra ostión", priceDelta: 40 },
+  { id: "extra-philadelphia", label: "Extra Philadelphia", priceDelta: 35 },
+  { id: "extra-platano", label: "Extra plátano", priceDelta: 35 },
+  { id: "extra-pollo", label: "Extra pollo", priceDelta: 40 },
+  { id: "extra-res", label: "Extra res", priceDelta: 40 },
+  { id: "extra-salmon", label: "Extra salmón", priceDelta: 40 },
+  { id: "extra-surimi", label: "Extra surimi", priceDelta: 35 },
+  { id: "extra-tampico", label: "Extra tampico", priceDelta: 35 },
+  { id: "extra-tocino", label: "Extra tocino", priceDelta: 40 },
+  { id: "queso-gratinado", label: "Queso gratinado", priceDelta: 35 },
+];
+
+const VEGETARIAN_ROLL_EXTRAS: ProductOption[] = [
+  { id: "alga-por-fuera", label: "Alga por fuera", priceDelta: 5 },
+  { id: "extra-aguacate", label: "Extra aguacate", priceDelta: 35 },
+  { id: "extra-pepino", label: "Extra pepino", priceDelta: 25 },
+  { id: "extra-philadelphia", label: "Extra Philadelphia", priceDelta: 35 },
+  { id: "queso-gratinado", label: "Queso gratinado", priceDelta: 35 },
+];
+
+const ROLL_EXTRAS_BY_ID: Record<string, ProductOption[]> = {
+  "rol-cali-trad": [
+    ...STANDARD_ROLL_EXTRAS,
+    { id: "extra-pepino", label: "Extra pepino", priceDelta: 25 },
+    { id: "extra-zanahoria", label: "Extra zanahoria", priceDelta: 10 },
+  ],
+  "rol-cali-especial": [
+    ...STANDARD_ROLL_EXTRAS,
+    { id: "extra-pulpo", label: "Extra pulpo", priceDelta: 40 },
+  ],
+  "rol-cali-veg": VEGETARIAN_ROLL_EXTRAS,
+  "rol-teriyaki": [{ id: "alga-por-fuera", label: "Alga por fuera", priceDelta: 5 }],
+  "rol-salvaje": [
+    { id: "alga-por-fuera", label: "Alga por fuera", priceDelta: 5 },
+    { id: "camaron-empanizado-dentro", label: "Camarón empanizado por dentro", priceDelta: 5 },
+  ],
+};
+
+const STANDARD_EXTRA_ROLL_IDS = new Set([
+  "rol-arrachera", "rol-bomba-camaron", "rol-bomba-especial", "rol-bomba-casa",
+  "rol-bomba-veg", "rol-bombazo", "rol-c4", "rol-chalino", "rol-chicken",
+  "rol-chipotle", "rol-cmt", "rol-cordon", "rol-cosmo", "rol-culichi",
+  "rol-dinamita", "rol-greengo", "rol-guerrero", "rol-luz-fuego", "rol-manchego",
+  "rol-mango", "rol-morelos", "rol-nevado", "rol-shushiyto", "rol-sonora",
+  "rol-subarachi", "rol-sushilito", "rol-tocino",
+]);
+
 export const promotions: Product[] = [
   {
     id: "promo-3-californias-te",
@@ -429,6 +487,8 @@ const baseProducts: Product[] = [
 
 function withMenuOptions(product: Product): Product {
   const optionGroups = [...(product.optionGroups ?? [])];
+  const extras = ROLL_EXTRAS_BY_ID[product.id] ??
+    (STANDARD_EXTRA_ROLL_IDS.has(product.id) ? STANDARD_ROLL_EXTRAS : product.extras);
 
   if (product.id === "rol-cali-trad") {
     optionGroups.push(...californiaOptionGroups("California tradicional"));
@@ -444,7 +504,7 @@ function withMenuOptions(product: Product): Product {
     optionGroups.push(bonelessOptionGroup);
   }
 
-  return optionGroups.length ? { ...product, optionGroups } : product;
+  return optionGroups.length || extras?.length ? { ...product, optionGroups, extras } : product;
 }
 
 export const products: Product[] = baseProducts.map(withMenuOptions);
