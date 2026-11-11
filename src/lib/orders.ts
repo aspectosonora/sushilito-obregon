@@ -1,6 +1,7 @@
 import type { Sucursal } from "@/data/menu";
 import { formatMXN } from "@/data/menu";
 import type { CartItem } from "@/lib/store";
+import { quoteShipping } from "@/lib/shipping";
 
 export type DeliveryMode = "domicilio" | "recoger";
 export type PaymentMethod = "efectivo" | "transferencia";
@@ -238,9 +239,12 @@ export function createSavedOrder(args: {
   const pointsRedeemed = POINTS_ENABLED
     ? Math.max(0, Math.min(args.pointsRedeemed ?? 0, args.subtotal))
     : 0;
-  const total = Math.max(0, args.subtotal - pointsRedeemed);
+  const shipping = args.customer.deliveryMode === "domicilio"
+    ? quoteShipping(args.sucursal.id, args.customer.colony)
+    : 0;
+  const total = Math.max(0, args.subtotal - pointsRedeemed) + (shipping ?? 0);
   const transfer = transferInfo(args.sucursal);
-  const shippingPending = args.customer.deliveryMode === "domicilio";
+  const shippingPending = args.customer.deliveryMode === "domicilio" && shipping === null;
 
   return {
     id,
@@ -253,7 +257,7 @@ export function createSavedOrder(args: {
     subtotal: args.subtotal,
     promoSubtotal,
     eligibleSubtotal,
-    shipping: 0,
+    shipping: shipping ?? 0,
     shippingPending,
     pointsRedeemed,
     pointsEarned: POINTS_ENABLED ? pointsForEligibleSubtotal(eligibleSubtotal) : 0,

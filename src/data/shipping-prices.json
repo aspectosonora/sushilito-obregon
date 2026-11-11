@@ -1,0 +1,2196 @@
+{
+  "obregon": [
+    {
+      "name": "Agrónomos",
+      "price": 25
+    },
+    {
+      "name": "Alisos",
+      "price": 25
+    },
+    {
+      "name": "Altar Calfornia",
+      "price": 30
+    },
+    {
+      "name": "Altar",
+      "price": 25
+    },
+    {
+      "name": "Álvaro Obregón",
+      "price": 35
+    },
+    {
+      "name": "Amanecer 1",
+      "price": 35
+    },
+    {
+      "name": "Amanecer 2",
+      "price": 35
+    },
+    {
+      "name": "Ampliación Miravalle",
+      "price": 30
+    },
+    {
+      "name": "Anselmo López",
+      "price": 35
+    },
+    {
+      "name": "Arboledas",
+      "price": 25
+    },
+    {
+      "name": "Armando Lopez",
+      "price": 35
+    },
+    {
+      "name": "Aves del Castilo",
+      "price": 45
+    },
+    {
+      "name": "Bella Vista",
+      "price": 25
+    },
+    {
+      "name": "Beltrones",
+      "price": 35
+    },
+    {
+      "name": "Benito Juárez (PO)",
+      "price": 35
+    },
+    {
+      "name": "Bosques del Náinari",
+      "price": 25
+    },
+    {
+      "name": "Buenaventura Residencial",
+      "price": 35
+    },
+    {
+      "name": "Bugambilias",
+      "price": 25
+    },
+    {
+      "name": "Cajeme",
+      "price": 35
+    },
+    {
+      "name": "Calzada Residencial",
+      "price": 35
+    },
+    {
+      "name": "Campanario 2",
+      "price": 35
+    },
+    {
+      "name": "Camapario 1",
+      "price": 35
+    },
+    {
+      "name": "Campestre",
+      "price": 25
+    },
+    {
+      "name": "Casa Blanca",
+      "price": 30
+    },
+    {
+      "name": "Casa Blanca Ampliación",
+      "price": 30
+    },
+    {
+      "name": "Casa Real",
+      "price": 35
+    },
+    {
+      "name": "Catena Residencial",
+      "price": 30
+    },
+    {
+      "name": "Cedro 1",
+      "price": 30
+    },
+    {
+      "name": "Cedro 2",
+      "price": 30
+    },
+    {
+      "name": "Central de Abastos",
+      "price": 35
+    },
+    {
+      "name": "Centro",
+      "price": 25
+    },
+    {
+      "name": "Chapultepec",
+      "price": 25
+    },
+    {
+      "name": "Cincuentenario",
+      "price": 25
+    },
+    {
+      "name": "Cócorit",
+      "price": 55
+    },
+    {
+      "name": "Codornices",
+      "price": 25
+    },
+    {
+      "name": "Colegio de Veracruz",
+      "price": 35
+    },
+    {
+      "name": "Colonia del Valle",
+      "price": 25
+    },
+    {
+      "name": "Colonias del Yaqui",
+      "price": 30
+    },
+    {
+      "name": "Constitución",
+      "price": 30
+    },
+    {
+      "name": "Corona Oficina",
+      "price": 35
+    },
+    {
+      "name": "Cortinas",
+      "price": 30
+    },
+    {
+      "name": "Cuahutémoc",
+      "price": 25
+    },
+    {
+      "name": "Cuahutémoc Cardenas",
+      "price": 45
+    },
+    {
+      "name": "Cumuripa",
+      "price": 25
+    },
+    {
+      "name": "Cuuripa Ampliacion",
+      "price": 25
+    },
+    {
+      "name": "Del Lago",
+      "price": 25
+    },
+    {
+      "name": "El Porton",
+      "price": 45
+    },
+    {
+      "name": "El Raquet",
+      "price": 25
+    },
+    {
+      "name": "El Roble",
+      "price": 35
+    },
+    {
+      "name": "El Rodeo",
+      "price": 45
+    },
+    {
+      "name": "El Tunel",
+      "price": 25
+    },
+    {
+      "name": "Electricistas",
+      "price": 25
+    },
+    {
+      "name": "Esperanza",
+      "price": 50
+    },
+    {
+      "name": "Esperanza Tiznado",
+      "price": 45
+    },
+    {
+      "name": "Fabrica Corona",
+      "price": 45
+    },
+    {
+      "name": "Faustino Félix",
+      "price": 30
+    },
+    {
+      "name": "FOVISSSTE 3",
+      "price": 25
+    },
+    {
+      "name": "FOVISSSTE 1",
+      "price": 25
+    },
+    {
+      "name": "FOVISSSTE 2",
+      "price": 25
+    },
+    {
+      "name": "Fracc. Almudena",
+      "price": 35
+    },
+    {
+      "name": "Fraccionamiento Primavera",
+      "price": 35
+    },
+    {
+      "name": "Fracc. Santa Fé",
+      "price": 35
+    },
+    {
+      "name": "Francisco Urbalejo",
+      "price": 50
+    },
+    {
+      "name": "Francisco Villanueva",
+      "price": 45
+    },
+    {
+      "name": "Fuentes del Bosque",
+      "price": 25
+    },
+    {
+      "name": "Girasoles",
+      "price": 35
+    },
+    {
+      "name": "Hacienda del Sol",
+      "price": 35
+    },
+    {
+      "name": "Hacienda Real",
+      "price": 25
+    },
+    {
+      "name": "Hacienda San José",
+      "price": 35
+    },
+    {
+      "name": "Herraduras",
+      "price": 30
+    },
+    {
+      "name": "Hidalgo",
+      "price": 25
+    },
+    {
+      "name": "Hogar y Patrimonio",
+      "price": 50
+    },
+    {
+      "name": "Hospital General",
+      "price": 25
+    },
+    {
+      "name": "Infonavit Yukuhimari",
+      "price": 25
+    },
+    {
+      "name": "ITESCA",
+      "price": 30
+    },
+    {
+      "name": "Jardin del Lago",
+      "price": 25
+    },
+    {
+      "name": "Jardines del Valle",
+      "price": 45
+    },
+    {
+      "name": "Javier R. Bours",
+      "price": 50
+    },
+    {
+      "name": "Kino",
+      "price": 45
+    },
+    {
+      "name": "La Florida",
+      "price": 25
+    },
+    {
+      "name": "La Joya",
+      "price": 25
+    },
+    {
+      "name": "La Misión",
+      "price": 35
+    },
+    {
+      "name": "La Misión",
+      "price": 35
+    },
+    {
+      "name": "La Puerta de Hierro",
+      "price": 35
+    },
+    {
+      "name": "Ladrillera",
+      "price": 25
+    },
+    {
+      "name": "Las Areneras",
+      "price": 35
+    },
+    {
+      "name": "Las Brisas",
+      "price": 25
+    },
+    {
+      "name": "Las Campanas",
+      "price": 30
+    },
+    {
+      "name": "Las Espigas",
+      "price": 30
+    },
+    {
+      "name": "Las Flores",
+      "price": 25
+    },
+    {
+      "name": "Las Fuentes",
+      "price": 30
+    },
+    {
+      "name": "Las Haciendas",
+      "price": 35
+    },
+    {
+      "name": "Las Haciendas Secc. Monjes",
+      "price": 45
+    },
+    {
+      "name": "Las Lomas",
+      "price": 30
+    },
+    {
+      "name": "Las Misiones",
+      "price": 45
+    },
+    {
+      "name": "Las Palmas",
+      "price": 45
+    },
+    {
+      "name": "Las Praderas",
+      "price": 45
+    },
+    {
+      "name": "Las Torres",
+      "price": 25
+    },
+    {
+      "name": "Lazaro Mercado",
+      "price": 25
+    },
+    {
+      "name": "Libertad",
+      "price": 30
+    },
+    {
+      "name": "Linda Vista",
+      "price": 35
+    },
+    {
+      "name": "Loma Residencial",
+      "price": 25
+    },
+    {
+      "name": "Los Alamos 1",
+      "price": 35
+    },
+    {
+      "name": "Los Alamos 2",
+      "price": 35
+    },
+    {
+      "name": "Los Angeles 1",
+      "price": 35
+    },
+    {
+      "name": "Los Angeles 2",
+      "price": 35
+    },
+    {
+      "name": "Los Angeles 3",
+      "price": 35
+    },
+    {
+      "name": "Los Arcos",
+      "price": 30
+    },
+    {
+      "name": "Los Encinos",
+      "price": 35
+    },
+    {
+      "name": "Los Horizontes",
+      "price": 35
+    },
+    {
+      "name": "Los Misioneros",
+      "price": 30
+    },
+    {
+      "name": "Los Patios",
+      "price": 35
+    },
+    {
+      "name": "Los Poetas",
+      "price": 25
+    },
+    {
+      "name": "Los Portales",
+      "price": 25
+    },
+    {
+      "name": "Luis Antillon",
+      "price": 50
+    },
+    {
+      "name": "Luis Donaldo Colosio",
+      "price": 35
+    },
+    {
+      "name": "Matias Mendez",
+      "price": 30
+    },
+    {
+      "name": "Maximiliano Lopez",
+      "price": 45
+    },
+    {
+      "name": "México",
+      "price": 35
+    },
+    {
+      "name": "Miguel A. Ampliacion",
+      "price": 25
+    },
+    {
+      "name": "Mira Sierra",
+      "price": 35
+    },
+    {
+      "name": "Mira Valle",
+      "price": 35
+    },
+    {
+      "name": "Mision del Sol 1",
+      "price": 45
+    },
+    {
+      "name": "Mision del Sol 2",
+      "price": 45
+    },
+    {
+      "name": "Mision San Gabriel",
+      "price": 25
+    },
+    {
+      "name": "Mision San Javier",
+      "price": 35
+    },
+    {
+      "name": "Monte Carlo",
+      "price": 30
+    },
+    {
+      "name": "Morelos",
+      "price": 25
+    },
+    {
+      "name": "Multifamiliares",
+      "price": 25
+    },
+    {
+      "name": "Municipio Libre",
+      "price": 30
+    },
+    {
+      "name": "Nainari del Yaqui",
+      "price": 25
+    },
+    {
+      "name": "Noroeste",
+      "price": 25
+    },
+    {
+      "name": "Noroeste Ampliacion",
+      "price": 25
+    },
+    {
+      "name": "Nueva Esperanza",
+      "price": 50
+    },
+    {
+      "name": "Nueva Galicia",
+      "price": 45
+    },
+    {
+      "name": "Nueva Palmira",
+      "price": 35
+    },
+    {
+      "name": "Nuevo Cajeme",
+      "price": 30
+    },
+    {
+      "name": "Olivos",
+      "price": 25
+    },
+    {
+      "name": "Otancahui",
+      "price": 25
+    },
+    {
+      "name": "Palma Real",
+      "price": 35
+    },
+    {
+      "name": "Palmar",
+      "price": 25
+    },
+    {
+      "name": "Paraiso",
+      "price": 30
+    },
+    {
+      "name": "Parque Industrial",
+      "price": 35
+    },
+    {
+      "name": "Paseo Alameda",
+      "price": 35
+    },
+    {
+      "name": "Pedregal",
+      "price": 35
+    },
+    {
+      "name": "PEMEX",
+      "price": 45
+    },
+    {
+      "name": "Pioneros",
+      "price": 35
+    },
+    {
+      "name": "Pioneros",
+      "price": 25
+    },
+    {
+      "name": "Portofino",
+      "price": 25
+    },
+    {
+      "name": "Portofino Residencial",
+      "price": 25
+    },
+    {
+      "name": "Pradera Bonita",
+      "price": 35
+    },
+    {
+      "name": "Praderas Altas",
+      "price": 45
+    },
+    {
+      "name": "Prados de la Laguna",
+      "price": 25
+    },
+    {
+      "name": "Prados del Tepeyac",
+      "price": 25
+    },
+    {
+      "name": "Primero de Mayo",
+      "price": 45
+    },
+    {
+      "name": "Privada de Campanario",
+      "price": 35
+    },
+    {
+      "name": "Privada Laguna",
+      "price": 25
+    },
+    {
+      "name": "Privada Santa Fé",
+      "price": 30
+    },
+    {
+      "name": "Privadas del Campanario",
+      "price": 45
+    },
+    {
+      "name": "Promo Habitat",
+      "price": 25
+    },
+    {
+      "name": "Proividencia",
+      "price": 35
+    },
+    {
+      "name": "Puente Real",
+      "price": 25
+    },
+    {
+      "name": "Puente Real Secc. Hispania",
+      "price": 25
+    },
+    {
+      "name": "Puente Real Secc. Andalucia",
+      "price": 25
+    },
+    {
+      "name": "Puente Real Secc. Cantabria",
+      "price": 25
+    },
+    {
+      "name": "Puente Real Secc. Hispania",
+      "price": 25
+    },
+    {
+      "name": "Puente Real Secc. Mira Flores",
+      "price": 25
+    },
+    {
+      "name": "Puente Real Secc. Sevilla",
+      "price": 25
+    },
+    {
+      "name": "Quinta Diaz",
+      "price": 25
+    },
+    {
+      "name": "Quinta Real",
+      "price": 35
+    },
+    {
+      "name": "Ramiro Valdez",
+      "price": 30
+    },
+    {
+      "name": "Real Campestre",
+      "price": 45
+    },
+    {
+      "name": "Real de Sevilla",
+      "price": 35
+    },
+    {
+      "name": "Real del Arco",
+      "price": 25
+    },
+    {
+      "name": "Real del Norte",
+      "price": 30
+    },
+    {
+      "name": "Real del Sol Ampliacion",
+      "price": 25
+    },
+    {
+      "name": "Real del Sol Secc. Mira Flores",
+      "price": 25
+    },
+    {
+      "name": "Real del Valle",
+      "price": 35
+    },
+    {
+      "name": "Reforma",
+      "price": 30
+    },
+    {
+      "name": "Rincon del Valle",
+      "price": 35
+    },
+    {
+      "name": "Robles del Castillo",
+      "price": 35
+    },
+    {
+      "name": "Russo Vogel",
+      "price": 35
+    },
+    {
+      "name": "San Anselmo",
+      "price": 30
+    },
+    {
+      "name": "San Antonio",
+      "price": 35
+    },
+    {
+      "name": "San Juan Capistrano",
+      "price": 25
+    },
+    {
+      "name": "Santa Anita",
+      "price": 25
+    },
+    {
+      "name": "Santa Catalina",
+      "price": 30
+    },
+    {
+      "name": "Seguro Social",
+      "price": 25
+    },
+    {
+      "name": "Severo Girón",
+      "price": 35
+    },
+    {
+      "name": "Sierra Vista",
+      "price": 35
+    },
+    {
+      "name": "Sierra Vista",
+      "price": 35
+    },
+    {
+      "name": "Sochiloa",
+      "price": 25
+    },
+    {
+      "name": "Sonora",
+      "price": 45
+    },
+    {
+      "name": "Sonora Esperanza",
+      "price": 50
+    },
+    {
+      "name": "Soriana",
+      "price": 25
+    },
+    {
+      "name": "Sóstenes Valenzuela",
+      "price": 35
+    },
+    {
+      "name": "Tec de Monterrey",
+      "price": 30
+    },
+    {
+      "name": "Terraza Monet",
+      "price": 30
+    },
+    {
+      "name": "Textilera",
+      "price": 35
+    },
+    {
+      "name": "Torre de París",
+      "price": 30
+    },
+    {
+      "name": "Torres del Castillo",
+      "price": 45
+    },
+    {
+      "name": "Ultratec",
+      "price": 45
+    },
+    {
+      "name": "UNISON",
+      "price": 30
+    },
+    {
+      "name": "URBI Villa",
+      "price": 30
+    },
+    {
+      "name": "URBI Villa del Real",
+      "price": 30
+    },
+    {
+      "name": "Valle Dorado",
+      "price": 45
+    },
+    {
+      "name": "Valle Verde",
+      "price": 45
+    },
+    {
+      "name": "Villa Alegre",
+      "price": 30
+    },
+    {
+      "name": "Villa Aurora",
+      "price": 30
+    },
+    {
+      "name": "Villa Bonita",
+      "price": 45
+    },
+    {
+      "name": "Villa California",
+      "price": 25
+    },
+    {
+      "name": "Villa California Zona Norte",
+      "price": 25
+    },
+    {
+      "name": "Villa California Octava Etapa",
+      "price": 45
+    },
+    {
+      "name": "Villa California Alameda",
+      "price": 45
+    },
+    {
+      "name": "Villa del Campestre",
+      "price": 30
+    },
+    {
+      "name": "Villa del Mezquite",
+      "price": 25
+    },
+    {
+      "name": "Villa Florencia",
+      "price": 25
+    },
+    {
+      "name": "Villa Fontana",
+      "price": 45
+    },
+    {
+      "name": "Villa Guadalupe",
+      "price": 35
+    },
+    {
+      "name": "Villa Itson",
+      "price": 25
+    },
+    {
+      "name": "Villa Satélite",
+      "price": 35
+    },
+    {
+      "name": "Villa Tetabiate",
+      "price": 25
+    },
+    {
+      "name": "Villas del Campestre",
+      "price": 30
+    },
+    {
+      "name": "Villas del Campestre",
+      "price": 35
+    },
+    {
+      "name": "Villas del Cortez",
+      "price": 45
+    },
+    {
+      "name": "Villas del Náinari",
+      "price": 25
+    },
+    {
+      "name": "Villas del Real",
+      "price": 35
+    },
+    {
+      "name": "Villas del Rey",
+      "price": 30
+    },
+    {
+      "name": "Villas del Rey Secc. Colonial",
+      "price": 30
+    },
+    {
+      "name": "Villas del Sol",
+      "price": 35
+    },
+    {
+      "name": "Villas del Tetabiate",
+      "price": 25
+    },
+    {
+      "name": "Villas del Trigo",
+      "price": 45
+    },
+    {
+      "name": "Vista Hermosa",
+      "price": 35
+    },
+    {
+      "name": "Zona Norte",
+      "price": 25
+    },
+    {
+      "name": "Zona Norte Comercial Walmart",
+      "price": 25
+    }
+  ],
+  "tabasco": [
+    {
+      "name": "Agronomos",
+      "price": 35
+    },
+    {
+      "name": "Algodones",
+      "price": 40
+    },
+    {
+      "name": "Alisos",
+      "price": 35
+    },
+    {
+      "name": "Alta California",
+      "price": 40
+    },
+    {
+      "name": "Altar",
+      "price": 35
+    },
+    {
+      "name": "Alvaro Obregon",
+      "price": 40
+    },
+    {
+      "name": "Amanecer I",
+      "price": 35
+    },
+    {
+      "name": "Amanecer Ii",
+      "price": 35
+    },
+    {
+      "name": "Ampliacion Alameda",
+      "price": 45
+    },
+    {
+      "name": "Ampliacion Miravalle",
+      "price": 40
+    },
+    {
+      "name": "Anselmo Lopez",
+      "price": 40
+    },
+    {
+      "name": "Arboledas",
+      "price": 35
+    },
+    {
+      "name": "Armando Lopez",
+      "price": 40
+    },
+    {
+      "name": "Aves del Castillo",
+      "price": 40
+    },
+    {
+      "name": "Bella Vista",
+      "price": 35
+    },
+    {
+      "name": "Beltrones",
+      "price": 45
+    },
+    {
+      "name": "Benito Juarez",
+      "price": 40
+    },
+    {
+      "name": "Bosques del Nainari",
+      "price": 35
+    },
+    {
+      "name": "Bugambilias",
+      "price": 35
+    },
+    {
+      "name": "Cajeme",
+      "price": 40
+    },
+    {
+      "name": "Calzada Residencial",
+      "price": 40
+    },
+    {
+      "name": "Campanario I",
+      "price": 40
+    },
+    {
+      "name": "Campanario Ii",
+      "price": 40
+    },
+    {
+      "name": "Campestre",
+      "price": 35
+    },
+    {
+      "name": "Casa Blanca",
+      "price": 35
+    },
+    {
+      "name": "Casa Blanca Ampliacion",
+      "price": 35
+    },
+    {
+      "name": "Casa Real",
+      "price": 35
+    },
+    {
+      "name": "Cedro I",
+      "price": 35
+    },
+    {
+      "name": "Cedro Ii",
+      "price": 35
+    },
+    {
+      "name": "Central de Abastos",
+      "price": 45
+    },
+    {
+      "name": "Centro",
+      "price": 35
+    },
+    {
+      "name": "Chapultepec",
+      "price": 35
+    },
+    {
+      "name": "Cincuentenario",
+      "price": 35
+    },
+    {
+      "name": "Cocorit",
+      "price": 45
+    },
+    {
+      "name": "Colegio de Veracruz",
+      "price": 45
+    },
+    {
+      "name": "Colinas del Yaqui",
+      "price": 35
+    },
+    {
+      "name": "Colonia del Valle",
+      "price": 35
+    },
+    {
+      "name": "Compostela",
+      "price": 40
+    },
+    {
+      "name": "Constellation Brands",
+      "price": 45
+    },
+    {
+      "name": "Constitución",
+      "price": 35
+    },
+    {
+      "name": "Corona Oficina",
+      "price": 45
+    },
+    {
+      "name": "Cortinas",
+      "price": 35
+    },
+    {
+      "name": "Cuachtemoc",
+      "price": 35
+    },
+    {
+      "name": "Cuachtemoc Cardenas",
+      "price": 40
+    },
+    {
+      "name": "Cumuripa",
+      "price": 35
+    },
+    {
+      "name": "Cumuripa Ampliacion",
+      "price": 35
+    },
+    {
+      "name": "Del Lago",
+      "price": 35
+    },
+    {
+      "name": "El Castillo",
+      "price": 35
+    },
+    {
+      "name": "El Porton",
+      "price": 45
+    },
+    {
+      "name": "El Raquet",
+      "price": 35
+    },
+    {
+      "name": "El Roble",
+      "price": 35
+    },
+    {
+      "name": "El Rodeo",
+      "price": 45
+    },
+    {
+      "name": "El Tunel",
+      "price": 40
+    },
+    {
+      "name": "Esperanza",
+      "price": 45
+    },
+    {
+      "name": "Esperanza Tiznado",
+      "price": 40
+    },
+    {
+      "name": "Faustino Felix",
+      "price": 35
+    },
+    {
+      "name": "Fovissste I",
+      "price": 35
+    },
+    {
+      "name": "Fovissste Ii",
+      "price": 35
+    },
+    {
+      "name": "Fovissste Iii",
+      "price": 35
+    },
+    {
+      "name": "Fraccionamiento Primavera",
+      "price": 40
+    },
+    {
+      "name": "Fraccionamiento Santa Fe",
+      "price": 40
+    },
+    {
+      "name": "Francisco Urbalejo",
+      "price": 35
+    },
+    {
+      "name": "Francisco Villanueva",
+      "price": 40
+    },
+    {
+      "name": "Fuentes del Bosque",
+      "price": 35
+    },
+    {
+      "name": "Girasoles",
+      "price": 40
+    },
+    {
+      "name": "Granjas Micas",
+      "price": 45
+    },
+    {
+      "name": "Hacienda Real",
+      "price": 35
+    },
+    {
+      "name": "Hacienda San Jose",
+      "price": 40
+    },
+    {
+      "name": "Haciendas del Sol",
+      "price": 40
+    },
+    {
+      "name": "Herraduras",
+      "price": 35
+    },
+    {
+      "name": "Hidalgo",
+      "price": 35
+    },
+    {
+      "name": "Hogar y Patrimonio",
+      "price": 45
+    },
+    {
+      "name": "Hospital General",
+      "price": 35
+    },
+    {
+      "name": "Infonavit Yukihimari",
+      "price": 35
+    },
+    {
+      "name": "Itesca",
+      "price": 40
+    },
+    {
+      "name": "Jardin del Lago",
+      "price": 35
+    },
+    {
+      "name": "Jardines del Valle",
+      "price": 40
+    },
+    {
+      "name": "Javier R Bours",
+      "price": 40
+    },
+    {
+      "name": "Kino",
+      "price": 40
+    },
+    {
+      "name": "La Florida",
+      "price": 35
+    },
+    {
+      "name": "La Herradura",
+      "price": 35
+    },
+    {
+      "name": "La Joya",
+      "price": 45
+    },
+    {
+      "name": "La Mision",
+      "price": 40
+    },
+    {
+      "name": "La Puerta de Hierro",
+      "price": 45
+    },
+    {
+      "name": "Ladrillera",
+      "price": 35
+    },
+    {
+      "name": "Las Brisas",
+      "price": 35
+    },
+    {
+      "name": "Las Campanas",
+      "price": 35
+    },
+    {
+      "name": "Las Espigas",
+      "price": 35
+    },
+    {
+      "name": "Las Flores",
+      "price": 35
+    },
+    {
+      "name": "Las Fuentes",
+      "price": 35
+    },
+    {
+      "name": "Las Haciendas",
+      "price": 40
+    },
+    {
+      "name": "Las Haciendas Secc. los Monjes",
+      "price": 40
+    },
+    {
+      "name": "Las Lomas",
+      "price": 40
+    },
+    {
+      "name": "Las Misiones",
+      "price": 40
+    },
+    {
+      "name": "Las Palmas",
+      "price": 35
+    },
+    {
+      "name": "Las Praderas",
+      "price": 35
+    },
+    {
+      "name": "Las Torres",
+      "price": 35
+    },
+    {
+      "name": "Lazaro Mercado",
+      "price": 35
+    },
+    {
+      "name": "Libertad",
+      "price": 35
+    },
+    {
+      "name": "Linda Vista",
+      "price": 40
+    },
+    {
+      "name": "Los Alamos I",
+      "price": 40
+    },
+    {
+      "name": "Los Alamos Ii",
+      "price": 40
+    },
+    {
+      "name": "Los Angeles I",
+      "price": 40
+    },
+    {
+      "name": "Los Angeles Ii",
+      "price": 40
+    },
+    {
+      "name": "Los Angeles Iii",
+      "price": 40
+    },
+    {
+      "name": "Los Arcos",
+      "price": 35
+    },
+    {
+      "name": "Los Encinos",
+      "price": 35
+    },
+    {
+      "name": "Los Heroes",
+      "price": 40
+    },
+    {
+      "name": "Los Horizontes",
+      "price": 40
+    },
+    {
+      "name": "Los Lagos",
+      "price": 40
+    },
+    {
+      "name": "Los Patios",
+      "price": 40
+    },
+    {
+      "name": "Los Portales",
+      "price": 35
+    },
+    {
+      "name": "Los Presidentes",
+      "price": 40
+    },
+    {
+      "name": "Los Sauces",
+      "price": 40
+    },
+    {
+      "name": "Luis Antillon",
+      "price": 45
+    },
+    {
+      "name": "Luis Donaldo Colosio",
+      "price": 40
+    },
+    {
+      "name": "Luis Echeverria",
+      "price": 35
+    },
+    {
+      "name": "Matias Mendez",
+      "price": 40
+    },
+    {
+      "name": "Maximiliano Lopez",
+      "price": 40
+    },
+    {
+      "name": "Mexico",
+      "price": 35
+    },
+    {
+      "name": "Miguel A Ampliacion",
+      "price": 35
+    },
+    {
+      "name": "Mira Sierra",
+      "price": 40
+    },
+    {
+      "name": "Miravalle",
+      "price": 35
+    },
+    {
+      "name": "Mision San Javier",
+      "price": 40
+    },
+    {
+      "name": "Mision del Real",
+      "price": 40
+    },
+    {
+      "name": "Mision del Sol I",
+      "price": 40
+    },
+    {
+      "name": "Mision del Sol Ii",
+      "price": 40
+    },
+    {
+      "name": "Montecarlo",
+      "price": 35
+    },
+    {
+      "name": "Morelos",
+      "price": 35
+    },
+    {
+      "name": "Multifamiliares",
+      "price": 35
+    },
+    {
+      "name": "Municipio Libre",
+      "price": 35
+    },
+    {
+      "name": "Nainari del Yaqui",
+      "price": 35
+    },
+    {
+      "name": "Noroeste",
+      "price": 35
+    },
+    {
+      "name": "Noroeste Ampliacion",
+      "price": 35
+    },
+    {
+      "name": "Nueva Esperanza",
+      "price": 45
+    },
+    {
+      "name": "Nueva Galicia",
+      "price": 40
+    },
+    {
+      "name": "Nueva Palmira",
+      "price": 40
+    },
+    {
+      "name": "Nuevo Cajeme",
+      "price": 40
+    },
+    {
+      "name": "Olivos",
+      "price": 40
+    },
+    {
+      "name": "Otancahui",
+      "price": 35
+    },
+    {
+      "name": "Palma Real",
+      "price": 40
+    },
+    {
+      "name": "Palmar",
+      "price": 35
+    },
+    {
+      "name": "Paraiso",
+      "price": 40
+    },
+    {
+      "name": "Parque Industrial",
+      "price": 40
+    },
+    {
+      "name": "Paseo Alameda",
+      "price": 40
+    },
+    {
+      "name": "Pedregal",
+      "price": 35
+    },
+    {
+      "name": "Pemex",
+      "price": 45
+    },
+    {
+      "name": "Pioneros",
+      "price": 40
+    },
+    {
+      "name": "Posada del Sol",
+      "price": 40
+    },
+    {
+      "name": "Pradera Bonita",
+      "price": 40
+    },
+    {
+      "name": "Praderas Altas",
+      "price": 40
+    },
+    {
+      "name": "Prados de la Laguna",
+      "price": 35
+    },
+    {
+      "name": "Prados del Tepeyac",
+      "price": 35
+    },
+    {
+      "name": "Prederas del Sur",
+      "price": 35
+    },
+    {
+      "name": "Primero de Mayo",
+      "price": 40
+    },
+    {
+      "name": "Privada Laguna",
+      "price": 35
+    },
+    {
+      "name": "Privada Santa Fe",
+      "price": 40
+    },
+    {
+      "name": "Privada del Campanario",
+      "price": 40
+    },
+    {
+      "name": "Privadas del Campanario",
+      "price": 40
+    },
+    {
+      "name": "Promo Habitat",
+      "price": 35
+    },
+    {
+      "name": "Provenia",
+      "price": 35
+    },
+    {
+      "name": "Providencia",
+      "price": 40
+    },
+    {
+      "name": "Puente Real",
+      "price": 35
+    },
+    {
+      "name": "Puente Real Secc Andalucia",
+      "price": 35
+    },
+    {
+      "name": "Puente Real Secc Hispania",
+      "price": 35
+    },
+    {
+      "name": "Puente Real Secc. Miraflores",
+      "price": 35
+    },
+    {
+      "name": "Quinta Diaz",
+      "price": 35
+    },
+    {
+      "name": "Quinta Real",
+      "price": 40
+    },
+    {
+      "name": "Ramiro Valdez",
+      "price": 40
+    },
+    {
+      "name": "Real Campestre",
+      "price": 40
+    },
+    {
+      "name": "Real de Sevilla",
+      "price": 40
+    },
+    {
+      "name": "Real del Arco",
+      "price": 40
+    },
+    {
+      "name": "Real del Norte",
+      "price": 40
+    },
+    {
+      "name": "Real del Sol Ampliacion",
+      "price": 35
+    },
+    {
+      "name": "Real del Sol Ampliacion Miraflores",
+      "price": 35
+    },
+    {
+      "name": "Real del Valle",
+      "price": 40
+    },
+    {
+      "name": "Reforma",
+      "price": 35
+    },
+    {
+      "name": "Rincon del Valle",
+      "price": 40
+    },
+    {
+      "name": "Robles del Castillo",
+      "price": 40
+    },
+    {
+      "name": "Russo Vogel",
+      "price": 40
+    },
+    {
+      "name": "San Anselmo",
+      "price": 40
+    },
+    {
+      "name": "San Antonio",
+      "price": 35
+    },
+    {
+      "name": "San Gabriel",
+      "price": 35
+    },
+    {
+      "name": "San Gabriel 2",
+      "price": 40
+    },
+    {
+      "name": "San Gabriel 3",
+      "price": 35
+    },
+    {
+      "name": "San Juan Capistrano",
+      "price": 35
+    },
+    {
+      "name": "San Rafael",
+      "price": 40
+    },
+    {
+      "name": "Santa Anita",
+      "price": 35
+    },
+    {
+      "name": "Santa Catalina",
+      "price": 40
+    },
+    {
+      "name": "Santa Cecilia",
+      "price": 40
+    },
+    {
+      "name": "Seguro Social",
+      "price": 35
+    },
+    {
+      "name": "Severo Giron",
+      "price": 40
+    },
+    {
+      "name": "Sierra Vista",
+      "price": 40
+    },
+    {
+      "name": "Sochiloa",
+      "price": 35
+    },
+    {
+      "name": "Sonora",
+      "price": 40
+    },
+    {
+      "name": "Sonora Esperanza",
+      "price": 40
+    },
+    {
+      "name": "Sostenes Valenzuela",
+      "price": 40
+    },
+    {
+      "name": "Tec del Monterrey",
+      "price": 40
+    },
+    {
+      "name": "Tepeyac",
+      "price": 35
+    },
+    {
+      "name": "Textileria",
+      "price": 45
+    },
+    {
+      "name": "Torre de Paris",
+      "price": 35
+    },
+    {
+      "name": "Torres de Paris",
+      "price": 35
+    },
+    {
+      "name": "Torres del Castillo",
+      "price": 40
+    },
+    {
+      "name": "Ultratec",
+      "price": 35
+    },
+    {
+      "name": "Unison",
+      "price": 40
+    },
+    {
+      "name": "Urbi Villa",
+      "price": 35
+    },
+    {
+      "name": "Urbi Villa de Real",
+      "price": 35
+    },
+    {
+      "name": "Valle Dorado",
+      "price": 40
+    },
+    {
+      "name": "Valle Verde",
+      "price": 40
+    },
+    {
+      "name": "Valle del Sol",
+      "price": 40
+    },
+    {
+      "name": "Villa Alegre",
+      "price": 35
+    },
+    {
+      "name": "Villa Aurora",
+      "price": 35
+    },
+    {
+      "name": "Villa Bonita",
+      "price": 45
+    },
+    {
+      "name": "Villa California",
+      "price": 35
+    },
+    {
+      "name": "Villa California 8va Etapa",
+      "price": 35
+    },
+    {
+      "name": "Villa California Alameda",
+      "price": 35
+    },
+    {
+      "name": "Villa California(zona Norte)",
+      "price": 35
+    },
+    {
+      "name": "Villa Florencia",
+      "price": 35
+    },
+    {
+      "name": "Villa Fontana",
+      "price": 40
+    },
+    {
+      "name": "Villa Gales",
+      "price": 40
+    },
+    {
+      "name": "Villa Guadalupe",
+      "price": 40
+    },
+    {
+      "name": "Villa Itson",
+      "price": 35
+    },
+    {
+      "name": "Villa Mesquite",
+      "price": 35
+    },
+    {
+      "name": "Villa Satelite",
+      "price": 40
+    },
+    {
+      "name": "Villa Tetabiate",
+      "price": 35
+    },
+    {
+      "name": "Villa del Campestres",
+      "price": 40
+    },
+    {
+      "name": "Villa del Mezquite",
+      "price": 35
+    },
+    {
+      "name": "Villas del Campestre",
+      "price": 40
+    },
+    {
+      "name": "Villas del Cortes",
+      "price": 40
+    },
+    {
+      "name": "Villas del Nainari",
+      "price": 35
+    },
+    {
+      "name": "Villas del Real",
+      "price": 35
+    },
+    {
+      "name": "Villas del Rey",
+      "price": 35
+    },
+    {
+      "name": "Villas del Rey Secc Colonial",
+      "price": 35
+    },
+    {
+      "name": "Villas del Sol",
+      "price": 40
+    },
+    {
+      "name": "Villas del Trigo",
+      "price": 40
+    },
+    {
+      "name": "Vista Hermosa",
+      "price": 40
+    },
+    {
+      "name": "Zona Comercial 200",
+      "price": 40
+    },
+    {
+      "name": "Zona Norte",
+      "price": 35
+    },
+    {
+      "name": "Zona Norte(comercial) Walmart",
+      "price": 35
+    }
+  ],
+  "navojoa": [
+    {
+      "name": "16 de Junio",
+      "price": 35
+    },
+    {
+      "name": "16 de Septiembre",
+      "price": 35
+    },
+    {
+      "name": "Aeropuerto",
+      "price": 35
+    },
+    {
+      "name": "Ampliacion Beltrones",
+      "price": 35
+    },
+    {
+      "name": "Armando Lopez Nogales",
+      "price": 30
+    },
+    {
+      "name": "Aviacion",
+      "price": 35
+    },
+    {
+      "name": "Beltrones",
+      "price": 35
+    },
+    {
+      "name": "Beltrones 2",
+      "price": 35
+    },
+    {
+      "name": "Brisas del Valle",
+      "price": 35
+    },
+    {
+      "name": "Bugambilias",
+      "price": 35
+    },
+    {
+      "name": "Bugambilias",
+      "price": 35
+    },
+    {
+      "name": "Camino Real",
+      "price": 30
+    },
+    {
+      "name": "Campestre",
+      "price": 30
+    },
+    {
+      "name": "Centro",
+      "price": 30
+    },
+    {
+      "name": "Constitucion",
+      "price": 30
+    },
+    {
+      "name": "Deportiva",
+      "price": 35
+    },
+    {
+      "name": "El Pedregal",
+      "price": 30
+    },
+    {
+      "name": "Fovisste",
+      "price": 35
+    },
+    {
+      "name": "Francisco Villa",
+      "price": 35
+    },
+    {
+      "name": "Girasoles",
+      "price": 35
+    },
+    {
+      "name": "Hacienda Real",
+      "price": 35
+    },
+    {
+      "name": "Hacienda Vieja",
+      "price": 35
+    },
+    {
+      "name": "Indeur",
+      "price": 35
+    },
+    {
+      "name": "Infonavit Sonora",
+      "price": 35
+    },
+    {
+      "name": "Jacarandas 1",
+      "price": 35
+    },
+    {
+      "name": "Jacarandas 2",
+      "price": 35
+    },
+    {
+      "name": "Jacarandas 3",
+      "price": 35
+    },
+    {
+      "name": "Juarez",
+      "price": 35
+    },
+    {
+      "name": "La Encantada",
+      "price": 30
+    },
+    {
+      "name": "La Guadalupana",
+      "price": 35
+    },
+    {
+      "name": "La Herradura 2",
+      "price": 35
+    },
+    {
+      "name": "La Joya",
+      "price": 35
+    },
+    {
+      "name": "La Quinta",
+      "price": 35
+    },
+    {
+      "name": "Lander",
+      "price": 35
+    },
+    {
+      "name": "Las Arboledas",
+      "price": 30
+    },
+    {
+      "name": "Laureles",
+      "price": 35
+    },
+    {
+      "name": "Los Arcos",
+      "price": 30
+    },
+    {
+      "name": "Los Arcos",
+      "price": 30
+    },
+    {
+      "name": "Los Arroyos",
+      "price": 30
+    },
+    {
+      "name": "Los Naranjos",
+      "price": 35
+    },
+    {
+      "name": "Mezquital de Pueblo Viejo",
+      "price": 35
+    },
+    {
+      "name": "Minas de Arenas",
+      "price": 35
+    },
+    {
+      "name": "Miravalle",
+      "price": 35
+    },
+    {
+      "name": "Misioneros",
+      "price": 35
+    },
+    {
+      "name": "Mocuzari",
+      "price": 30
+    },
+    {
+      "name": "Moderna",
+      "price": 30
+    },
+    {
+      "name": "Nogalitos",
+      "price": 30
+    },
+    {
+      "name": "Nueva Generacion",
+      "price": 35
+    },
+    {
+      "name": "Planta Kowi",
+      "price": 35
+    },
+    {
+      "name": "Pradera Dorada",
+      "price": 35
+    },
+    {
+      "name": "Pueblo Nuevo",
+      "price": 35
+    },
+    {
+      "name": "Pueblo Viejo",
+      "price": 35
+    },
+    {
+      "name": "Reforma",
+      "price": 30
+    },
+    {
+      "name": "Residencial Navia",
+      "price": 30
+    },
+    {
+      "name": "Rosales",
+      "price": 30
+    },
+    {
+      "name": "Salvatierra",
+      "price": 30
+    },
+    {
+      "name": "San Ignacio",
+      "price": 35
+    },
+    {
+      "name": "San Ignacio Cohurimpo",
+      "price": 30
+    },
+    {
+      "name": "Santa Fe",
+      "price": 35
+    },
+    {
+      "name": "Santa Maria 1",
+      "price": 30
+    },
+    {
+      "name": "Santa Maria 2",
+      "price": 30
+    },
+    {
+      "name": "Santa Maria 3",
+      "price": 30
+    },
+    {
+      "name": "Santa Maria 4",
+      "price": 30
+    },
+    {
+      "name": "Sonora",
+      "price": 30
+    },
+    {
+      "name": "Sonora Progresista",
+      "price": 35
+    },
+    {
+      "name": "Sop",
+      "price": 35
+    },
+    {
+      "name": "Tepeyac",
+      "price": 35
+    },
+    {
+      "name": "Tetaboca",
+      "price": 35
+    },
+    {
+      "name": "Tetanchopo",
+      "price": 30
+    },
+    {
+      "name": "Tierra Blanca",
+      "price": 30
+    },
+    {
+      "name": "Tierra y Libertad",
+      "price": 35
+    },
+    {
+      "name": "Villa Dorada",
+      "price": 35
+    },
+    {
+      "name": "Villa Lourdes",
+      "price": 30
+    }
+  ]
+}

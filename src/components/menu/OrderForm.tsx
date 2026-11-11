@@ -12,6 +12,7 @@ import {
   type CustomerProfile,
 } from "@/lib/orders";
 import { syncOrderToFirebase } from "@/lib/firebase/rest";
+import { colonySuggestions, quoteShipping } from "@/lib/shipping";
 import {
   MessageCircle,
   ShoppingBag,
@@ -36,7 +37,11 @@ export function OrderForm() {
 
   const pointsToRedeem =
     POINTS_ENABLED && redeemPoints && points >= 35 ? Math.min(points, subtotal) : 0;
-  const total = Math.max(0, subtotal - pointsToRedeem);
+  const shipping = form.deliveryMode === "domicilio" ? quoteShipping(sucursal.id, form.colony) : 0;
+  const total = Math.max(0, subtotal - pointsToRedeem) + (shipping ?? 0);
+  const suggestions = form.deliveryMode === "domicilio"
+    ? colonySuggestions(sucursal.id, form.colony)
+    : [];
   const canSend =
     cart.length > 0 &&
     form.name.trim().length > 1 &&
@@ -170,10 +175,14 @@ export function OrderForm() {
                 <input
                   value={form.colony}
                   onChange={(e) => setField("colony", e.target.value)}
+                  list="delivery-colonies"
                   maxLength={90}
                   className="mt-1 w-full rounded-xl border border-black/10 bg-[var(--brand-bg)] px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--brand-red)]/40"
                   placeholder="Colonia"
                 />
+                <datalist id="delivery-colonies">
+                  {suggestions.map((name) => <option key={name} value={name} />)}
+                </datalist>
               </div>
               <div>
                 <label className="text-[11px] font-bold uppercase tracking-wider text-[var(--brand-black)]/70">
@@ -358,7 +367,9 @@ export function OrderForm() {
             {form.deliveryMode === "domicilio" && (
               <div className="flex items-center justify-between">
                 <span className="text-xs uppercase tracking-wider text-white/60">Envio</span>
-                <span className="text-xs font-semibold text-white/70">Por confirmar</span>
+                <span className="text-xs font-semibold text-white/70">
+                  {shipping === null ? "Por confirmar" : formatMXN(shipping)}
+                </span>
               </div>
             )}
             <div className="flex items-center justify-between pt-1">

@@ -271,10 +271,10 @@
         <div class="sep"></div>
         <div class="row"><span>Subtotal</span><strong>${money.format(Number(order.subtotal || 0))}</strong></div>
         ${
-          order.envioPendiente
+          (order.envioPendiente || order.shippingPending)
             ? '<div class="row"><span>Envio</span><strong>Por confirmar</strong></div>'
-            : Number(order.envio || 0) > 0
-              ? `<div class="row"><span>Envio</span><strong>${money.format(Number(order.envio || 0))}</strong></div>`
+            : Number(order.envio || order.shipping || 0) > 0
+              ? `<div class="row"><span>Envio</span><strong>${money.format(Number(order.envio || order.shipping || 0))}</strong></div>`
               : ""
         }
         ${
