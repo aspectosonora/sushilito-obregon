@@ -239,6 +239,34 @@ const STANDARD_EXTRA_ROLL_IDS = new Set([
   "rol-subarachi", "rol-sushilito", "rol-tocino",
 ]);
 
+const GOHAN_EXTRAS: ProductOption[] = [
+  { id: "extra-aguacate", label: "Extra aguacate", priceDelta: 35 },
+  { id: "extra-camaron", label: "Extra camarón", priceDelta: 40 },
+  { id: "extra-philadelphia", label: "Extra Philadelphia", priceDelta: 35 },
+  { id: "extra-res", label: "Extra res", priceDelta: 40 },
+  { id: "extra-tampico", label: "Extra tampico", priceDelta: 35 },
+];
+
+const HOT_DISH_EXTRAS: ProductOption[] = [
+  ...GOHAN_EXTRAS,
+  { id: "extra-pollo", label: "Extra pollo", priceDelta: 40 },
+];
+
+const SOUP_EXTRAS: ProductOption[] = [
+  { id: "extra-camaron", label: "Extra camarón", priceDelta: 40 },
+  { id: "extra-pollo", label: "Extra pollo", priceDelta: 40 },
+];
+
+const PLATILLO_EXTRAS_BY_ID: Record<string, ProductOption[]> = {
+  "plat-gohan": GOHAN_EXTRAS,
+  "plat-gohan-esp": GOHAN_EXTRAS,
+  "plat-japan": HOT_DISH_EXTRAS,
+  "plat-tepanyaki": HOT_DISH_EXTRAS,
+  "plat-teriyaki": HOT_DISH_EXTRAS,
+  "plat-yakimeshi": HOT_DISH_EXTRAS,
+  "plat-yakimeshi-esp": HOT_DISH_EXTRAS,
+};
+
 export const promotions: Product[] = [
   {
     id: "promo-3-californias-te",
@@ -488,7 +516,9 @@ const baseProducts: Product[] = [
 function withMenuOptions(product: Product): Product {
   const optionGroups = [...(product.optionGroups ?? [])];
   const extras = ROLL_EXTRAS_BY_ID[product.id] ??
-    (STANDARD_EXTRA_ROLL_IDS.has(product.id) ? STANDARD_ROLL_EXTRAS : product.extras);
+    (STANDARD_EXTRA_ROLL_IDS.has(product.id) ? STANDARD_ROLL_EXTRAS :
+      PLATILLO_EXTRAS_BY_ID[product.id] ??
+      (product.categoryId === "sopas" ? SOUP_EXTRAS : product.extras));
 
   if (product.id === "rol-cali-trad") {
     optionGroups.push(...californiaOptionGroups("California tradicional"));
