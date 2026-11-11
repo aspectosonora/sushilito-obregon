@@ -19,7 +19,6 @@ import {
   ChevronRight,
   ArrowLeft,
   LogIn,
-  X,
 } from "lucide-react";
 import heroBrand from "@/assets/hero-brand.png";
 import logoBlanco from "@/assets/logo-blanco.svg";
@@ -126,7 +125,6 @@ function MenuPage() {
   const { sucursal, setSucursalId } = useStore();
   const [selectedCat, setSelectedCat] = useState<string | null>(null);
   const [modalProduct, setModalProduct] = useState<Product | null>(null);
-  const [showPromoPopup, setShowPromoPopup] = useState(true);
   const [currentDay, setCurrentDay] = useState(() => new Date().getDay());
 
   const categoryItems = useMemo(
@@ -526,104 +524,8 @@ function MenuPage() {
       </footer>
 
       <ProductModal product={modalProduct} onClose={() => setModalProduct(null)} />
-      {showPromoPopup && activePromotions.length > 0 && (
-        <PromoPopup
-          items={activePromotions}
-          currentDay={currentDay}
-          onOpen={(product) => {
-            setShowPromoPopup(false);
-            setModalProduct(product);
-          }}
-          onClose={() => setShowPromoPopup(false)}
-        />
-      )}
       <FloatingCartBar />
       <FloatingWhatsApp />
-    </div>
-  );
-}
-
-function PromoPopup({
-  items,
-  currentDay,
-  onOpen,
-  onClose,
-}: {
-  items: Product[];
-  currentDay: number;
-  onOpen: (product: Product) => void;
-  onClose: () => void;
-}) {
-  return (
-    <div
-      className="fixed inset-0 z-[70] bg-black/85 backdrop-blur-sm px-4 py-5 flex items-center justify-center"
-      role="dialog"
-      aria-modal="true"
-      aria-label="Promociones de la semana"
-      onClick={onClose}
-    >
-      <div
-        className="relative w-full max-w-[520px] max-h-[92vh] overflow-y-auto rounded-3xl border-2 border-[var(--brand-red)] bg-[var(--brand-black)] shadow-2xl"
-        onClick={(event) => event.stopPropagation()}
-      >
-        <button
-          type="button"
-          onClick={onClose}
-          aria-label="Cerrar promociones"
-          className="absolute right-2 top-2 z-10 size-10 rounded-full bg-black/70 text-white grid place-items-center hover:bg-[var(--brand-red)] transition"
-        >
-          <X className="size-7" />
-        </button>
-        <div className="p-4 sm:p-5">
-          <div className="pr-12">
-            <div className="text-[10px] uppercase tracking-[0.24em] text-[var(--brand-red)] font-black">
-              Promos activas
-            </div>
-            <h2 className="font-display text-4xl leading-none text-white mt-1">
-              {promoDayNames[currentDay]}
-            </h2>
-            <p className="text-xs text-white/60 mt-1">
-              Solo se muestran las promociones disponibles hoy.
-            </p>
-          </div>
-
-          <div className="mt-4 grid gap-3">
-            {items.map((promo) => (
-              <button
-                key={promo.id}
-                onClick={() => onOpen(promo)}
-                className="group relative min-h-[118px] overflow-hidden rounded-2xl border-2 border-[var(--brand-red)] text-left shadow-[0_12px_30px_-16px_rgba(226,31,29,1)] transition active:scale-[0.99]"
-              >
-                <img
-                  src={promo.image}
-                  alt=""
-                  className="absolute inset-0 h-full w-full object-cover opacity-90 group-hover:scale-105 transition duration-500"
-                  loading="eager"
-                />
-                <div className="absolute inset-0 bg-gradient-to-r from-black/95 via-black/70 to-black/35" />
-                <div className="relative z-10 min-h-[118px] p-4 flex flex-col justify-between">
-                  <div>
-                    <div className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--brand-red)]">
-                      Promo de hoy
-                    </div>
-                    <h3 className="mt-1 max-w-[250px] font-black text-white text-lg leading-tight">
-                      {promo.name}
-                    </h3>
-                  </div>
-                  <div className="flex items-end justify-between gap-3">
-                    <span className="font-display text-4xl leading-none text-white">
-                      {formatMXN(promo.price)}
-                    </span>
-                    <span className="rounded-lg bg-[var(--brand-red)] px-3 py-2 text-[10px] font-black uppercase tracking-wide text-white shadow">
-                      Pedir
-                    </span>
-                  </div>
-                </div>
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
     </div>
   );
 }
