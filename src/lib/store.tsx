@@ -39,10 +39,16 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       if (c) {
         const saved = JSON.parse(c) as CartItem[];
         setCart(
-          saved.map((item) => ({
-            ...item,
-            image: products.find((product) => product.id === item.productId)?.image ?? item.image,
-          })),
+          saved.map((item) => {
+            const product = products.find((entry) => entry.id === item.productId);
+            return {
+              ...item,
+              image: product?.image ?? item.image,
+              unitPrice: product
+                ? product.price + (item.extras ?? []).reduce((sum, extra) => sum + extra.priceDelta, 0)
+                : item.unitPrice,
+            };
+          }),
         );
       }
       const s = localStorage.getItem(LS_SUC);
