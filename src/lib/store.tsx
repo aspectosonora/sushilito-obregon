@@ -8,7 +8,7 @@ export interface CartItem {
   unitPrice: number; // base + extras
   qty: number;
   notes?: string;
-  extras: { id: string; label: string; priceDelta: number }[];
+  extras: { id: string; label: string; priceDelta: number; qty?: number }[];
   image: string;
   isPromotion?: boolean;
 }
@@ -29,6 +29,12 @@ const Ctx = createContext<StoreCtx | null>(null);
 const LS_CART = "sushilito.cart";
 const LS_SUC = "sushilito.sucursal";
 
+const extrasTotal = (extras: CartItem["extras"]) =>
+  extras.reduce((sum, extra) => sum + extra.priceDelta * (extra.qty ?? 1), 0);
+
+const extrasKey = (extras: CartItem["extras"]) =>
+  extras.map((extra) => `${extra.id}:${extra.qty ?? 1}`).sort().join(",");
+
 export function StoreProvider({ children }: { children: ReactNode }) {
   const [sucursalId, setSucId] = useState<string>(sucursales[0].id);
   const [cart, setCart] = useState<CartItem[]>([]);
@@ -39,13 +45,22 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       if (c) {
         const saved = JSON.parse(c) as CartItem[];
         setCart(
-          saved.map((item) => {
+          saved.filter((item) => item.productId !== "rol-bomba-casa" ||
+            (item.extras ?? []).some((extra) => extra.id.startsWith("bomba-rollo-base:")))
+          .map((item) => {
             const product = products.find((entry) => entry.id === item.productId);
+            const extras = (item.extras ?? []).map((extra) => ({
+              ...extra,
+              qty: Math.max(1, Number(extra.qty) || 1),
+              priceDelta: product?.extras?.find((option) => option.id === extra.id)?.priceDelta
+                ?? extra.priceDelta,
+            }));
             return {
               ...item,
+              extras,
               image: product?.image ?? item.image,
               unitPrice: product
-                ? product.price + (item.extras ?? []).reduce((sum, extra) => sum + extra.priceDelta, 0)
+                ? product.price + extrasTotal(extras)
                 : item.unitPrice,
             };
           }),
@@ -77,20 +92,13 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const sucursal = sucursales.find((s) => s.id === sucursalId) ?? sucursales[0];
 
   const addItem: StoreCtx["addItem"] = (p, qty, extras, notes) => {
-    const extrasTotal = extras.reduce((a, e) => a + e.priceDelta, 0);
-    const unitPrice = p.price + extrasTotal;
+    const unitPrice = p.price + extrasTotal(extras);
     setCart((prev) => {
       // match identical config
-      const key = `${p.id}__${extras
-        .map((e) => e.id)
-        .sort()
-        .join(",")}__${notes ?? ""}`;
+      const key = `${p.id}__${extrasKey(extras)}__${notes ?? ""}`;
       const existing = prev.find(
         (i) =>
-          `${i.productId}__${i.extras
-            .map((e) => e.id)
-            .sort()
-            .join(",")}__${i.notes ?? ""}` === key,
+          `${i.productId}__${extrasKey(i.extras)}__${i.notes ?? ""}` === key,
       );
       if (existing) {
         return prev.map((i) => (i === existing ? { ...i, qty: i.qty + qty } : i));

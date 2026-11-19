@@ -321,6 +321,11 @@ export function OrderForm() {
                     <div className="text-sm font-semibold truncate">
                       {i.qty}x {i.name}
                     </div>
+                    {i.extras.length > 0 && (
+                      <div className="text-[11px] text-white/55 leading-tight">
+                        {i.extras.map((extra) => `${extra.label}${(extra.qty ?? 1) > 1 ? ` x${extra.qty}` : ""}`).join(", ")}
+                      </div>
+                    )}
                     <div className="text-[11px] text-white/55">
                       {formatMXN(i.unitPrice * i.qty)}
                     </div>

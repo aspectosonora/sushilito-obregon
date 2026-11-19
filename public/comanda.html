@@ -262,7 +262,7 @@
             (item) => `
           <div class="item">
             <div class="row"><strong>${item.qty || 1}x ${item.name || item.nombre}</strong><strong>${money.format(lineTotal(item))}</strong></div>
-            ${item.extras && item.extras.length ? `<p class="small">Extras: ${item.extras.map((e) => e.label || e.nombre).join(", ")}</p>` : ""}
+            ${item.extras && item.extras.length ? `<p class="small">Extras: ${item.extras.map((e) => `${e.label || e.nombre}${Number(e.qty || 1) > 1 ? ` x${e.qty}` : ""}`).join(", ")}</p>` : ""}
             ${item.notes ? `<p class="small">Nota: ${item.notes}</p>` : ""}
           </div>
         `,

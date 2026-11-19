@@ -257,6 +257,8 @@ const SOUP_EXTRAS: ProductOption[] = [
   { id: "extra-pollo", label: "Extra pollo", priceDelta: 40 },
 ];
 
+const EXTRA_PRICE_INCREASE = 5;
+
 const PLATILLO_EXTRAS_BY_ID: Record<string, ProductOption[]> = {
   "plat-gohan": GOHAN_EXTRAS,
   "plat-gohan-esp": GOHAN_EXTRAS,
@@ -272,7 +274,7 @@ export const promotions: Product[] = [
     id: "promo-3-californias-te",
     categoryId: "promociones",
     name: "3 Californias + 1 Lt. de Té",
-    price: 420,
+    price: 480,
     image: MENU_IMG.promo3Californias,
     tags: ["promo", "favorito"],
     activeDays: [0, 1, 2, 3, 4, 5, 6],
@@ -287,7 +289,7 @@ export const promotions: Product[] = [
     id: "promo-platillo-te-lunes",
     categoryId: "promociones",
     name: "Platillo + 1/2 Lt. de Té",
-    price: 195,
+    price: 225,
     image: MENU_IMG.promoPlatillo,
     tags: ["promo"],
     activeDays: [1],
@@ -321,7 +323,7 @@ export const promotions: Product[] = [
     id: "promo-cali-trad-te-martes",
     categoryId: "promociones",
     name: "California Trad. + 1/2 Lt. de Té",
-    price: 155,
+    price: 175,
     image: MENU_IMG.promoCaliTrad,
     tags: ["promo"],
     activeDays: [2],
@@ -332,7 +334,7 @@ export const promotions: Product[] = [
     id: "promo-cali-esp-te-martes",
     categoryId: "promociones",
     name: "California Esp. + 1/2 Lt. de Té",
-    price: 175,
+    price: 195,
     image: MENU_IMG.promoCaliEsp,
     tags: ["promo"],
     activeDays: [2],
@@ -343,7 +345,7 @@ export const promotions: Product[] = [
     id: "promo-boneless-te-jueves",
     categoryId: "promociones",
     name: "Boneless + 1/2 Lt. de Té",
-    price: 195,
+    price: 225,
     image: MENU_IMG.promoBoneless,
     tags: ["promo"],
     activeDays: [4],
@@ -513,12 +515,31 @@ const baseProducts: Product[] = [
   { id: "beb-te-litro", categoryId: "bebidas", name: "Té 1L", price: 55, image: MENU_IMG.bebTe, description: "" },
 ];
 
+const bombaBaseOptions: ProductOption[] = baseProducts
+  .filter((item) => item.categoryId === "rollos" &&
+    item.id !== "rol-tampico" && !item.id.startsWith("rol-bomba"))
+  .map((item) => ({ id: item.id, label: item.name.replace(" (10 pz)", ""), priceDelta: 0 }))
+  .concat({ id: "rol-cilindro", label: "Cilindro", priceDelta: 0 });
+
 function withMenuOptions(product: Product): Product {
   const optionGroups = [...(product.optionGroups ?? [])];
-  const extras = ROLL_EXTRAS_BY_ID[product.id] ??
+  const baseExtras = ROLL_EXTRAS_BY_ID[product.id] ??
     (STANDARD_EXTRA_ROLL_IDS.has(product.id) ? STANDARD_ROLL_EXTRAS :
       PLATILLO_EXTRAS_BY_ID[product.id] ??
       (product.categoryId === "sopas" ? SOUP_EXTRAS : product.extras));
+  const extras = baseExtras?.map((extra) => ({
+    ...extra,
+    priceDelta: extra.priceDelta > 0 ? extra.priceDelta + EXTRA_PRICE_INCREASE : 0,
+  }));
+
+  if (product.id === "rol-bomba-casa") {
+    optionGroups.push({
+      id: "bomba-rollo-base",
+      title: "Rollo base",
+      required: true,
+      options: bombaBaseOptions,
+    });
+  }
 
   if (product.id === "rol-cali-trad") {
     optionGroups.push(...californiaOptionGroups("California tradicional"));

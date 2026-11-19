@@ -338,7 +338,7 @@ export function buildWhatsAppMessage(order: SavedOrder) {
   order.items.forEach((item) => {
     lines.push(`- ${item.qty}x ${item.name} - ${formatMXN(item.unitPrice * item.qty)}`);
     if (item.extras.length)
-      lines.push(`   Extras: ${item.extras.map((extra) => extra.label).join(", ")}`);
+      lines.push(`   Extras: ${item.extras.map((extra) => `${extra.label}${(extra.qty ?? 1) > 1 ? ` x${extra.qty}` : ""}`).join(", ")}`);
     if (item.notes) lines.push(`   Nota: ${item.notes}`);
   });
   lines.push("");

@@ -46,7 +46,7 @@ export function CartSheet({ open, onOpenChange }: { open: boolean; onOpenChange:
                         <Trash2 className="size-4" />
                       </button>
                     </div>
-                    {i.extras.length > 0 && <div className="text-[11px] text-muted-foreground mt-0.5 line-clamp-1">+ {i.extras.map(e => e.label).join(", ")}</div>}
+                    {i.extras.length > 0 && <div className="text-[11px] text-muted-foreground mt-0.5 line-clamp-1">+ {i.extras.map(e => `${e.label}${(e.qty ?? 1) > 1 ? ` x${e.qty}` : ""}`).join(", ")}</div>}
                     {i.notes && <div className="text-[11px] italic text-muted-foreground mt-0.5 line-clamp-1">"{i.notes}"</div>}
                     <div className="mt-1.5 flex items-center justify-between">
                       <div className="inline-flex items-center gap-1 bg-[var(--brand-bg)] rounded-full p-0.5 border">
